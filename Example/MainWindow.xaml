@@ -1,0 +1,13 @@
+﻿<Window x:Class="Example.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:tl="clr-namespace:Timeliner.Net;assembly=Timeliner.Net"
+        xmlns:local="clr-namespace:Example"
+        mc:Ignorable="d"
+        Title="Example" Height="200" Width="600">
+    <Grid>
+        <tl:Timeliner/>
+    </Grid>
+</Window>
