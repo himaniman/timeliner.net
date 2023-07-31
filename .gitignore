@@ -396,8 +396,3 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-
-# Versionize script result
-version.h
-version.cs
-version.txt
