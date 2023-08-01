@@ -162,7 +162,7 @@ namespace TimelinerNet
             var minorMode = span.NearSpanMode() - 1;
             var major = majorMode.ModeToSpan();
             var minor = minorMode.ModeToSpan();
-            var timePerPixcel = span / xSize;
+            //var timePerPixcel = span / xSize;
             var majorWithPx = major.ToPixcel(span, xSize);
 
             var leftEdgeMajor = LeftEdge.GetMajorLeftEdge(majorMode);
@@ -236,19 +236,55 @@ namespace TimelinerNet
                 }));
                 currentMajor += major;
             }
+            RedrawData();
         }
 
+        public void RedrawData()
+        {
+            var xSize = grid_Timeline.ActualWidth;
+            stackPanel_Threads.Children.Clear();
+            stackPanel_MainData.Children.Clear();
 
+            var span = RightEdge - LeftEdge;
+            //var timePerPixcel = span / xSize;
 
-        //private TimeSpan NearMajorSpan(TimeSpan span)
-        //{
-        //    if (span <= TimeSpan.FromSeconds(1)) return TimeSpan.FromMilliseconds(100);
-        //    else if (span <= TimeSpan.FromMinutes(1)) return TimeSpan.FromSeconds(1);
-        //    else if (span <= TimeSpan.FromHours(1)) return TimeSpan.FromMinutes(1);
-        //    else if (span <= TimeSpan.FromDays(1)) return TimeSpan.FromHours(1);
-        //    else if (span <= TimeSpan.FromDays(30)) return TimeSpan.FromDays(1);
-        //    else if (span <= TimeSpan.FromDays(360)) return TimeSpan.FromDays(30);
-        //    else return TimeSpan.FromDays(360);
-        //}
+            foreach (var item in Items)
+            {
+                stackPanel_Threads.Children.Add(new Border
+                {
+                    BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0xFF, 0x00)),
+                    BorderThickness = new Thickness(0, 0, 0, 1),
+                    Child = new TextBlock { Text = item.Value.Name, Margin = new Thickness(2) },
+                });
+                var bd = new Border
+                {
+                    BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0xFF, 0x00)),
+                    BorderThickness = new Thickness(0, 0, 0, 1),
+                    Child = new Grid()
+                };
+                foreach (var job in item.Value.Jobs)
+                {
+                    (bd.Child as Grid).Children.Add(new Border
+                    {
+                        Width = (job.Value.End - job.Value.Begin).ToPixcel(span, xSize),
+                        Margin = new Thickness((job.Value.Begin - LeftEdge).ToPixcel(span, xSize), 0,0,0),
+                        CornerRadius = new CornerRadius(4),
+                        Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0xFF, 0xFF)),
+                        BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x00, 0xFF)),
+                        BorderThickness = new Thickness(1),
+                        HorizontalAlignment = HorizontalAlignment.Left,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Child = new TextBlock
+                        {
+                            Text = job.Value.Name,
+                            Margin = new Thickness(1)
+                        }
+                    });
+
+                }
+
+                stackPanel_MainData.Children.Add(bd);
+            }
+        }
     }
 }

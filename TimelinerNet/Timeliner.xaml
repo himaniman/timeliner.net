@@ -9,9 +9,6 @@
              SizeChanged="UserControl_SizeChanged" Loaded="UserControl_Loaded">
     <StackPanel>
         <Grid>
-            
-        </Grid>
-        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="180"/>
                 <ColumnDefinition/>
@@ -26,7 +23,14 @@
                 </StackPanel>
             </Border>
             <Border Grid.Row="1" Background="White" BorderBrush="Black" BorderThickness="1">
-                <TextBlock Text="threads"/>
+                <StackPanel x:Name="stackPanel_Threads">
+                    <Border BorderBrush="Black" BorderThickness="0,0,0,1">
+                        <TextBlock Text="task1" Margin="2"/>
+                    </Border>
+                    <Border BorderBrush="Black" BorderThickness="0,0,0,1">
+                        <TextBlock Text="task2" Margin="2"/>
+                    </Border>
+                </StackPanel>
             </Border>
             <Border Grid.Column="1" Background="LightGray" BorderBrush="Black" BorderThickness="1">
                 <Grid x:Name="grid_Timeline" ClipToBounds="True">
@@ -44,7 +48,15 @@
             <Border Grid.Row="1" Grid.Column="1" Background="LightGray" BorderBrush="Black" BorderThickness="1">
                 <Grid>
                     <Grid x:Name="grid_MainGrid" ClipToBounds="True"/>
-                    <Grid x:Name="grid_MainData" ClipToBounds="True"/>
+                    <StackPanel x:Name="stackPanel_MainData" ClipToBounds="True">
+                        <Border BorderBrush="Black" BorderThickness="0,0,0,1">
+                            <Grid>
+                                <Border Width="80" Margin="80,0,0,0" CornerRadius="2" Background="Yellow" BorderBrush="Red" BorderThickness="1" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                    <TextBlock Text="asd" Margin="1"/>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
                 </Grid>
             </Border>
         </Grid>

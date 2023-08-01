@@ -20,6 +20,7 @@ namespace Example
         public Dictionary<Guid, TimelinerNet.TimelinerItem> Items { get; private set; } = new Dictionary<Guid, TimelinerNet.TimelinerItem>();
         public MainWindow()
         {
+            var now = new DateTime(2023, 08, 20, 23, 50, 00);
             Items.Add(Guid.NewGuid(), new TimelinerNet.TimelinerItem()
             {
                 Name = "Item",
@@ -28,8 +29,36 @@ namespace Example
                     { Guid.NewGuid(), new TimelinerNet.TimelinerJob()
                         {
                             Name = "Job",
-                            Begin = DateTime.Now - TimeSpan.FromMinutes(30),
-                            End = DateTime.Now - TimeSpan.FromMinutes(15)
+                            Begin = now - TimeSpan.FromMinutes(30),
+                            End = now - TimeSpan.FromMinutes(15)
+                        }
+                    },
+                    { Guid.NewGuid(), new TimelinerNet.TimelinerJob()
+                        {
+                            Name = "Job2",
+                            Begin = now - TimeSpan.FromMinutes(45),
+                            End = now - TimeSpan.FromMinutes(35)
+                        }
+                    }
+                }
+            });
+            Items.Add(Guid.NewGuid(), new TimelinerNet.TimelinerItem()
+            {
+                Name = "Item2",
+                Jobs = new Dictionary<Guid, TimelinerNet.TimelinerJob>()
+                {
+                    { Guid.NewGuid(), new TimelinerNet.TimelinerJob()
+                        {
+                            Name = "Job123",
+                            Begin = now - TimeSpan.FromMinutes(20),
+                            End = now - TimeSpan.FromMinutes(18)
+                        }
+                    },
+                    { Guid.NewGuid(), new TimelinerNet.TimelinerJob()
+                        {
+                            Name = "Job456",
+                            Begin = now - TimeSpan.FromMinutes(10),
+                            End = now + TimeSpan.FromMinutes(10)
                         }
                     }
                 }
