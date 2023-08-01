@@ -24,6 +24,10 @@ namespace TimelinerNet
         private DateTime Now;
         private DateTime LeftEdge;
         private DateTime RightEdge;
+        private Point initMousePoint;
+        private DateTime mouseCapturePoint;
+
+        public bool IsOnManipulate { get; set; }
 
         public Dictionary<Guid, TimelinerItem> Items
         {
@@ -52,6 +56,46 @@ namespace TimelinerNet
             LeftEdge = Now - TimeSpan.FromMinutes(60);
             RightEdge = Now + TimeSpan.FromMinutes(30);
             InitializeComponent();
+        }
+
+        protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed && Mouse.Capture(this as IInputElement))
+            {
+                initMousePoint = e.GetPosition(this as IInputElement);
+                mouseCapturePoint = LeftEdge;
+                IsOnManipulate = true;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsOnManipulate)));
+                e.Handled = true;
+            }
+            base.OnPreviewMouseDown(e);
+        }
+
+        protected override void OnPreviewMouseUp(MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Released)
+            {
+                IsOnManipulate = false;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsOnManipulate)));
+                Mouse.Capture(null);
+                e.Handled = true;
+            }
+            base.OnPreviewMouseUp(e);
+        }
+
+        protected override void OnPreviewMouseMove(MouseEventArgs e)
+        {
+            if (IsOnManipulate && e.LeftButton == MouseButtonState.Pressed)
+            {
+                double deltapx = initMousePoint.X - e.GetPosition(this as IInputElement).X;
+
+                var span = RightEdge - LeftEdge;
+                LeftEdge += span * 0.00001 * deltapx;
+                RightEdge += span * 0.00001 * deltapx; 
+                RedrawGrid();
+                e.Handled = true;
+            }
+            base.OnPreviewMouseMove(e);
         }
 
         protected override void OnPreviewMouseWheel(MouseWheelEventArgs e)
@@ -111,6 +155,7 @@ namespace TimelinerNet
         {
             var xSize = grid_Timeline.ActualWidth;
             grid_Timeline.Children.Clear();
+            grid_MainGrid.Children.Clear();
 
             var span = RightEdge - LeftEdge;
             var majorMode = span.NearSpanMode();
@@ -118,47 +163,81 @@ namespace TimelinerNet
             var major = majorMode.ModeToSpan();
             var minor = minorMode.ModeToSpan();
             var timePerPixcel = span / xSize;
+            var majorWithPx = major.ToPixcel(span, xSize);
 
             var leftEdgeMajor = LeftEdge.GetMajorLeftEdge(majorMode);
             var currentMajor = leftEdgeMajor;
 
-            var subTicks = new List<UIElement>();
-
+            var subTicks = new List<TextBlock>();
+            var subTicksCnt = major / minor;
+            var subTickWidth = majorWithPx / subTicksCnt;
+            for (int t = 0; t < subTicksCnt; t++)
+            {
+                subTicks.Add(new TextBlock
+                {
+                    Text = t.ToString(),
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    TextAlignment = TextAlignment.Center,
+                    Width = subTickWidth,
+                    Margin = new Thickness(subTickWidth * t, 2, 2, 2)
+                });
+            }
 
             while (currentMajor <= RightEdge)
             {
                 var offset = currentMajor - leftEdgeMajor - (LeftEdge - leftEdgeMajor);
                 var offsetPx = offset.ToPixcel(span, xSize);
-                var widthPx = major.ToPixcel(span, xSize);
 
-
-                grid_Timeline.Children.Add(new Border
+                var border = new Border
                 {
-                    Width = widthPx,
+                    Width = majorWithPx,
                     Margin = new Thickness(offsetPx, 0, 0, 0),
                     Background = new SolidColorBrush(Color.FromArgb(0xFF, 0xAC, 0xAC, 0xAC)),
                     BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x00, 0x00)),
-                    BorderThickness = new Thickness(1,0,0,0),
+                    BorderThickness = new Thickness(1, 0, 0, 0),
                     HorizontalAlignment = HorizontalAlignment.Left,
-                    Child = new TextBlock
+                    Child = new StackPanel
                     {
-                        Text = currentMajor.ToString() + " " + offset.ToString(),
-                        HorizontalAlignment = offsetPx < 0 ? HorizontalAlignment.Right : offsetPx + widthPx > xSize ? HorizontalAlignment.Left : HorizontalAlignment.Center,
-                        Margin = new Thickness(2)
+                        Children =
+                        {
+                            new TextBlock
+                            {
+                                Text = currentMajor.ToString() + " " + offset.ToString(),
+                                HorizontalAlignment = offsetPx < 0 ? HorizontalAlignment.Right : offsetPx + majorWithPx > xSize ? HorizontalAlignment.Left : HorizontalAlignment.Center,
+                                Margin = new Thickness(2)
+                            },
+                            new Grid
+                            {
+                                ClipToBounds = true,
+                            }
+                        }
                     }
-
-                    //X1 = px,
-                    //Y1 = 6,
-                    //X2 = px,
-                    //Y2 = 6 + 5,
-                    //Stroke = new SolidColorBrush(Color.FromArgb(0xFF, 0xAC, 0xAC, 0xAC)),
-                    //StrokeThickness = 1,
-                    //SnapsToDevicePixels = true,
+                };
+                subTicks.ForEach(x => ((border.Child as StackPanel).Children[1] as Grid).Children.Add(x.GetCopy()));
+                grid_Timeline.Children.Add(border);
+                grid_MainGrid.Children.Add(new Line
+                {
+                    X1 = offsetPx,
+                    X2 = offsetPx,
+                    Y1 = 0,
+                    Y2 = grid_MainGrid.ActualHeight,
+                    Stroke = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0xFF, 0x00)),
+                    StrokeThickness = 1,
                 });
+                subTicks.ForEach(x => grid_MainGrid.Children.Add(new Line
+                {
+                    
+                    X1 = offsetPx + x.Margin.Left + x.Width / 2,
+                    X2 = offsetPx + x.Margin.Left + x.Width / 2,
+                    Y1 = 0,
+                    Y2 = grid_MainGrid.ActualHeight,
+                    Stroke = new SolidColorBrush(Color.FromArgb(0xFF, 0x88, 0x88, 0x00)),
+                    StrokeThickness = 1,
+                }));
                 currentMajor += major;
             }
-
         }
+
 
 
         //private TimeSpan NearMajorSpan(TimeSpan span)

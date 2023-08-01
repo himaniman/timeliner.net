@@ -35,24 +35,18 @@
                             <TextBlock Text="text" Margin="2" HorizontalAlignment="Center"/>
                             <Grid ClipToBounds="True">
                                 <TextBlock Text="1" Margin="-10,2,2,0" HorizontalAlignment="Left"/>
-                                <TextBlock Text="2" Margin="30,2,2,0" HorizontalAlignment="Left"/>
+                                <TextBlock Text="2" Margin="30,2,2,0" HorizontalAlignment="Left" Width="50" TextAlignment="Center"/>
                             </Grid>
                         </StackPanel>
                     </Border>
                 </Grid>
             </Border>
-            <Grid Grid.Row="1" Grid.Column="1">
-                <Grid x:Name="grid_MainGrid"/>
-                <Grid x:Name="grid_MainData"/>
-                <Grid ClipToBounds="True">
-                    <Border Background="Green" BorderBrush="Red" BorderThickness="1" Width="350" Margin="-300,0,0,0">
-                        <StackPanel>
-                            <TextBlock Text="text" Margin="2"/>
-                            <TextBlock Text="text" Margin="2"/>
-                        </StackPanel>
-                    </Border>
+            <Border Grid.Row="1" Grid.Column="1" Background="LightGray" BorderBrush="Black" BorderThickness="1">
+                <Grid>
+                    <Grid x:Name="grid_MainGrid" ClipToBounds="True"/>
+                    <Grid x:Name="grid_MainData" ClipToBounds="True"/>
                 </Grid>
-            </Grid>
+            </Border>
         </Grid>
     </StackPanel>
 </UserControl>
