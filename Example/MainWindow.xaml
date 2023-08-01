@@ -8,6 +8,6 @@
         mc:Ignorable="d"
         Title="Example" Height="200" Width="600">
     <Grid>
-        <tl:Timeliner/>
+        <tl:Timeliner Items="{Binding Items, Mode=OneWay}" FontSize="12"/>
     </Grid>
 </Window>

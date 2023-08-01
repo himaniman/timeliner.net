@@ -7,7 +7,52 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              SizeChanged="UserControl_SizeChanged" Loaded="UserControl_Loaded">
-    <Grid>
-        <TextBlock Text="..."/>
-    </Grid>
+    <StackPanel>
+        <Grid>
+            
+        </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="180"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Border Background="LightGray" BorderBrush="Black" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="text" Margin="2"/>
+                </StackPanel>
+            </Border>
+            <Border Grid.Row="1" Background="White" BorderBrush="Black" BorderThickness="1">
+                <TextBlock Text="threads"/>
+            </Border>
+            <Border Grid.Column="1" Background="LightGray" BorderBrush="Black" BorderThickness="1">
+                <Grid x:Name="grid_Timeline" ClipToBounds="True">
+                    <Border Background="Green" BorderBrush="Red" BorderThickness="1" Width="350" Margin="-10,0,0,0" HorizontalAlignment="Left">
+                        <StackPanel>
+                            <TextBlock Text="text" Margin="2" HorizontalAlignment="Center"/>
+                            <Grid ClipToBounds="True">
+                                <TextBlock Text="1" Margin="-10,2,2,0" HorizontalAlignment="Left"/>
+                                <TextBlock Text="2" Margin="30,2,2,0" HorizontalAlignment="Left"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Border>
+            <Grid Grid.Row="1" Grid.Column="1">
+                <Grid x:Name="grid_MainGrid"/>
+                <Grid x:Name="grid_MainData"/>
+                <Grid ClipToBounds="True">
+                    <Border Background="Green" BorderBrush="Red" BorderThickness="1" Width="350" Margin="-300,0,0,0">
+                        <StackPanel>
+                            <TextBlock Text="text" Margin="2"/>
+                            <TextBlock Text="text" Margin="2"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Grid>
+        </Grid>
+    </StackPanel>
 </UserControl>

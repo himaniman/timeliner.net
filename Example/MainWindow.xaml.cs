@@ -17,8 +17,24 @@ namespace Example
 {
     public partial class MainWindow : Window
     {
+        public Dictionary<Guid, TimelinerNet.TimelinerItem> Items { get; private set; } = new Dictionary<Guid, TimelinerNet.TimelinerItem>();
         public MainWindow()
         {
+            Items.Add(Guid.NewGuid(), new TimelinerNet.TimelinerItem()
+            {
+                Name = "Item",
+                Jobs = new Dictionary<Guid, TimelinerNet.TimelinerJob>()
+                {
+                    { Guid.NewGuid(), new TimelinerNet.TimelinerJob()
+                        {
+                            Name = "Job",
+                            Begin = DateTime.Now - TimeSpan.FromMinutes(30),
+                            End = DateTime.Now - TimeSpan.FromMinutes(15)
+                        }
+                    }
+                }
+            });
+            DataContext = this;
             InitializeComponent();
         }
     }
