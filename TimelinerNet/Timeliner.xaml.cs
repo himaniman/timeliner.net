@@ -168,16 +168,16 @@ namespace TimelinerNet
 
             while (currentMajor <= RightEdge)
             {
-                var major = majorMode.ModeToSpan(currentMajor);
-                var majorWithPx = major.ToPixcel(span, xSize);
+                var majorSpan = majorMode.ModeToSpan(currentMajor);
+                var majorWithPx = majorSpan.ToPixcel(span, xSize);
                 //currentMajor = leftEdgeMajor + major * currentMajorTurn;
-                var offset = currentMajor - leftEdgeMajor - (LeftEdge - leftEdgeMajor);
-                var offsetPx = offset.ToPixcel(span, xSize);
+                var majorOffset = currentMajor - leftEdgeMajor - (LeftEdge - leftEdgeMajor);
+                var majorOffsetPx = majorOffset.ToPixcel(span, xSize);
 
                 var border = new Border
                 {
                     Width = majorWithPx,
-                    Margin = new Thickness(offsetPx, 0, 0, 0),
+                    Margin = new Thickness(majorOffsetPx, 0, 0, 0),
                     Background = new SolidColorBrush(Color.FromArgb(0xFF, 0xAC, 0xAC, 0xAC)),
                     BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x00, 0x00)),
                     BorderThickness = new Thickness(1, 0, 0, 0),
@@ -189,7 +189,7 @@ namespace TimelinerNet
                             new TextBlock
                             {
                                 Text = currentMajor.ToFullString(majorMode),
-                                HorizontalAlignment = offsetPx < 0 ? HorizontalAlignment.Right : offsetPx + majorWithPx > xSize ? HorizontalAlignment.Left : HorizontalAlignment.Center,
+                                HorizontalAlignment = majorOffsetPx < 0 ? HorizontalAlignment.Right : majorOffsetPx + majorWithPx > xSize ? HorizontalAlignment.Left : HorizontalAlignment.Center,
                                 Margin = new Thickness(2)
                             },
                             new Grid
@@ -200,43 +200,45 @@ namespace TimelinerNet
                     }
                 };
 
-                var minor = minorMode.ModeToSpan(currentMajor);
-                var subTicks = new List<TextBlock>();
-                var subTicksCnt = major / minor;
-                var subTickWidth = majorWithPx / subTicksCnt;
-                for (int t = 0; t < subTicksCnt; t++)
+                var currentMinor = currentMajor;
+                var minorSpan = minorMode.ModeToSpan(currentMinor);
+                while (currentMinor < currentMajor + majorSpan - minorSpan)
                 {
+                    currentMinor += minorSpan;
+                    minorSpan = minorMode.ModeToSpan(currentMinor);
+                    var minorWithPx = minorSpan.ToPixcel(span, xSize);
+                    var minorOffset = currentMinor - currentMajor;
+                    var minorOffsetPx = minorOffset.ToPixcel(span, xSize);
                     ((border.Child as StackPanel).Children[1] as Grid).Children.Add(new TextBlock
                     {
-                        Text = t.ToString(),
+                        Text = currentMinor.ToLastString(minorMode),
                         HorizontalAlignment = HorizontalAlignment.Left,
                         TextAlignment = TextAlignment.Center,
-                        Width = subTickWidth,
-                        Margin = new Thickness(subTickWidth * t, 2, 2, 2)
+                        Width = minorWithPx,
+                        Margin = new Thickness(minorOffsetPx - minorWithPx / 2, 2, 2, 2)
+                    });
+                    grid_MainGrid.Children.Add(new Line
+                    {
+                        X1 = majorOffsetPx + minorOffsetPx,
+                        X2 = majorOffsetPx + minorOffsetPx,
+                        Y1 = 0,
+                        Y2 = grid_MainGrid.ActualHeight,
+                        Stroke = new SolidColorBrush(Color.FromArgb(0xFF, 0x88, 0x88, 0x00)),
+                        StrokeThickness = 1,
                     });
                 }
 
                 grid_Timeline.Children.Add(border);
                 grid_MainGrid.Children.Add(new Line
                 {
-                    X1 = offsetPx,
-                    X2 = offsetPx,
+                    X1 = majorOffsetPx,
+                    X2 = majorOffsetPx,
                     Y1 = 0,
                     Y2 = grid_MainGrid.ActualHeight,
                     Stroke = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0xFF, 0x00)),
                     StrokeThickness = 1,
                 });
-                subTicks.ForEach(x => grid_MainGrid.Children.Add(new Line
-                {
-                    
-                    X1 = offsetPx + x.Margin.Left + x.Width / 2,
-                    X2 = offsetPx + x.Margin.Left + x.Width / 2,
-                    Y1 = 0,
-                    Y2 = grid_MainGrid.ActualHeight,
-                    Stroke = new SolidColorBrush(Color.FromArgb(0xFF, 0x88, 0x88, 0x00)),
-                    StrokeThickness = 1,
-                }));
-                currentMajor += major;
+                currentMajor += majorSpan;
             }
             RedrawData();
         }
