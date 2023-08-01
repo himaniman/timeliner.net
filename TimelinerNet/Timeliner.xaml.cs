@@ -90,8 +90,8 @@ namespace TimelinerNet
                 double deltapx = initMousePoint.X - e.GetPosition(this as IInputElement).X;
 
                 var span = RightEdge - LeftEdge;
-                LeftEdge += span * 0.00001 * deltapx;
-                RightEdge += span * 0.00001 * deltapx; 
+                LeftEdge += span * 0.0001 * deltapx;
+                RightEdge += span * 0.0001 * deltapx; 
                 RedrawGrid();
                 e.Handled = true;
             }
@@ -112,13 +112,13 @@ namespace TimelinerNet
                 var span = RightEdge - LeftEdge;
                 if (e.Delta < 0)
                 {
-                    LeftEdge -= span * 0.1;
-                    RightEdge += span * 0.1;
+                    LeftEdge -= span * 0.05;
+                    RightEdge += span * 0.05;
                 }
                 else
                 {
-                    LeftEdge += span * 0.1;
-                    RightEdge -= span * 0.1;
+                    LeftEdge += span * 0.05;
+                    RightEdge -= span * 0.05;
                 }
 
                 //double newSpan;
@@ -160,31 +160,17 @@ namespace TimelinerNet
             var span = RightEdge - LeftEdge;
             var majorMode = span.NearSpanMode();
             var minorMode = span.NearSpanMode() - 1;
-            var major = majorMode.ModeToSpan();
-            var minor = minorMode.ModeToSpan();
             //var timePerPixcel = span / xSize;
-            var majorWithPx = major.ToPixcel(span, xSize);
 
             var leftEdgeMajor = LeftEdge.GetMajorLeftEdge(majorMode);
+            //var currentMajorTurn = 0;
             var currentMajor = leftEdgeMajor;
-
-            var subTicks = new List<TextBlock>();
-            var subTicksCnt = major / minor;
-            var subTickWidth = majorWithPx / subTicksCnt;
-            for (int t = 0; t < subTicksCnt; t++)
-            {
-                subTicks.Add(new TextBlock
-                {
-                    Text = t.ToString(),
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    TextAlignment = TextAlignment.Center,
-                    Width = subTickWidth,
-                    Margin = new Thickness(subTickWidth * t, 2, 2, 2)
-                });
-            }
 
             while (currentMajor <= RightEdge)
             {
+                var major = majorMode.ModeToSpan(currentMajor);
+                var majorWithPx = major.ToPixcel(span, xSize);
+                //currentMajor = leftEdgeMajor + major * currentMajorTurn;
                 var offset = currentMajor - leftEdgeMajor - (LeftEdge - leftEdgeMajor);
                 var offsetPx = offset.ToPixcel(span, xSize);
 
@@ -202,7 +188,7 @@ namespace TimelinerNet
                         {
                             new TextBlock
                             {
-                                Text = currentMajor.ToString() + " " + offset.ToString(),
+                                Text = currentMajor.ToFullString(majorMode),
                                 HorizontalAlignment = offsetPx < 0 ? HorizontalAlignment.Right : offsetPx + majorWithPx > xSize ? HorizontalAlignment.Left : HorizontalAlignment.Center,
                                 Margin = new Thickness(2)
                             },
@@ -213,7 +199,23 @@ namespace TimelinerNet
                         }
                     }
                 };
-                subTicks.ForEach(x => ((border.Child as StackPanel).Children[1] as Grid).Children.Add(x.GetCopy()));
+
+                var minor = minorMode.ModeToSpan(currentMajor);
+                var subTicks = new List<TextBlock>();
+                var subTicksCnt = major / minor;
+                var subTickWidth = majorWithPx / subTicksCnt;
+                for (int t = 0; t < subTicksCnt; t++)
+                {
+                    ((border.Child as StackPanel).Children[1] as Grid).Children.Add(new TextBlock
+                    {
+                        Text = t.ToString(),
+                        HorizontalAlignment = HorizontalAlignment.Left,
+                        TextAlignment = TextAlignment.Center,
+                        Width = subTickWidth,
+                        Margin = new Thickness(subTickWidth * t, 2, 2, 2)
+                    });
+                }
+
                 grid_Timeline.Children.Add(border);
                 grid_MainGrid.Children.Add(new Line
                 {
