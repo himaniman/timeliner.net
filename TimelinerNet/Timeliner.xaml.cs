@@ -201,11 +201,11 @@ namespace TimelinerNet
                 };
 
                 var currentMinor = currentMajor;
-                var minorSpan = minorMode.ModeToSpan(currentMinor);
+                var minorSpan = minorMode.ModeToSpan(currentMinor) * 15;
                 while (currentMinor < currentMajor + majorSpan - minorSpan)
                 {
                     currentMinor += minorSpan;
-                    minorSpan = minorMode.ModeToSpan(currentMinor);
+                    minorSpan = minorMode.ModeToSpan(currentMinor) * 15;
                     var minorWithPx = minorSpan.ToPixcel(span, xSize);
                     var minorOffset = currentMinor - currentMajor;
                     var minorOffsetPx = minorOffset.ToPixcel(span, xSize);
@@ -268,23 +268,37 @@ namespace TimelinerNet
                 };
                 foreach (var job in item.Value.Jobs)
                 {
-                    (bd.Child as Grid).Children.Add(new Border
+                    if (job.Value.End > LeftEdge && job.Value.Begin < RightEdge)
                     {
-                        Width = (job.Value.End - job.Value.Begin).ToPixcel(span, xSize),
-                        Margin = new Thickness((job.Value.Begin - LeftEdge).ToPixcel(span, xSize), 0,0,0),
-                        CornerRadius = new CornerRadius(4),
-                        Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0xFF, 0xFF)),
-                        BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x00, 0xFF)),
-                        BorderThickness = new Thickness(1),
-                        HorizontalAlignment = HorizontalAlignment.Left,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        Child = new TextBlock
+                        var br = new Border
                         {
-                            Text = job.Value.Name,
-                            Margin = new Thickness(1)
+                            Width = (job.Value.End - job.Value.Begin).ToPixcel(span, xSize),
+                            Margin = new Thickness((job.Value.Begin - LeftEdge).ToPixcel(span, xSize), 0, 0, 0),
+                            CornerRadius = new CornerRadius(4),
+                            Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0xFF, 0xFF)),
+                            BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x00, 0xFF)),
+                            BorderThickness = new Thickness(1),
+                            HorizontalAlignment = HorizontalAlignment.Left,
+                            VerticalAlignment = VerticalAlignment.Center,
+                            Child = new TextBlock
+                            {
+                                Text = job.Value.Name,
+                                Margin = new Thickness(1)
+                            }
+                        };
+                        if (br.Margin.Left < 0)
+                        {
+                            br.Width = br.Width + br.Margin.Left;
+                            br.Margin = new Thickness(0);
+                            (br.Child as TextBlock).Text = "<-" + (br.Child as TextBlock).Text;
                         }
-                    });
-
+                        if (br.Margin.Left + br.Width > xSize)
+                        {
+                            //br.Width = br.Margin.Left - br.Width;
+                            (br.Child as TextBlock).Text = (br.Child as TextBlock).Text + "->";
+                        }
+                    (bd.Child as Grid).Children.Add(br);
+                    }
                 }
 
                 stackPanel_MainData.Children.Add(bd);
