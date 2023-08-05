@@ -25,7 +25,9 @@ namespace TimelinerNet
         private DateTime LeftEdge;
         private DateTime RightEdge;
         private Point initMousePoint;
-        private DateTime mouseCapturePoint;
+        private DateTime initCaptureLeftEdge;
+        private DateTime initCaptureRightEdge;
+        private TimeSpan initCaptureScalePx;
 
         public bool IsOnManipulate { get; set; }
 
@@ -63,7 +65,9 @@ namespace TimelinerNet
             if (e.LeftButton == MouseButtonState.Pressed && Mouse.Capture(this as IInputElement))
             {
                 initMousePoint = e.GetPosition(this as IInputElement);
-                mouseCapturePoint = LeftEdge;
+                initCaptureLeftEdge = LeftEdge;
+                initCaptureRightEdge = RightEdge;
+                initCaptureScalePx = (RightEdge - LeftEdge) / grid_Timeline.ActualWidth;
                 IsOnManipulate = true;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsOnManipulate)));
                 e.Handled = true;
@@ -89,9 +93,10 @@ namespace TimelinerNet
             {
                 double deltapx = initMousePoint.X - e.GetPosition(this as IInputElement).X;
 
-                var span = RightEdge - LeftEdge;
-                LeftEdge += span * 0.0001 * deltapx;
-                RightEdge += span * 0.0001 * deltapx; 
+                
+                //var span = RightEdge - LeftEdge;
+                LeftEdge = initCaptureLeftEdge + deltapx * initCaptureScalePx;
+                RightEdge = initCaptureRightEdge + deltapx * initCaptureScalePx;
                 RedrawGrid();
                 e.Handled = true;
             }
