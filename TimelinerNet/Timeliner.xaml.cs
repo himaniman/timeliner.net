@@ -183,9 +183,9 @@ namespace TimelinerNet
                 {
                     Width = majorWithPx,
                     Margin = new Thickness(majorOffsetPx, 0, 0, 0),
-                    Background = new SolidColorBrush(Color.FromArgb(0xFF, 0xAC, 0xAC, 0xAC)),
-                    BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x00, 0x00)),
-                    BorderThickness = new Thickness(1, 0, 0, 0),
+                    //Background = new SolidColorBrush(Color.FromArgb(0xFF, 0xAC, 0xAC, 0xAC)),
+                    BorderBrush = SystemColors.ActiveBorderBrush,
+                    BorderThickness = new Thickness(1, 0, 1, 0),
                     HorizontalAlignment = HorizontalAlignment.Left,
                     Child = new StackPanel
                     {
@@ -228,7 +228,7 @@ namespace TimelinerNet
                         X2 = majorOffsetPx + minorOffsetPx,
                         Y1 = 0,
                         Y2 = grid_MainGrid.ActualHeight,
-                        Stroke = new SolidColorBrush(Color.FromArgb(0xFF, 0x88, 0x88, 0x00)),
+                        Stroke = SystemColors.ActiveBorderBrush,
                         StrokeThickness = 1,
                     });
                 }
@@ -240,7 +240,7 @@ namespace TimelinerNet
                     X2 = majorOffsetPx,
                     Y1 = 0,
                     Y2 = grid_MainGrid.ActualHeight,
-                    Stroke = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0xFF, 0x00)),
+                    Stroke = SystemColors.ActiveBorderBrush,
                     StrokeThickness = 1,
                 });
                 currentMajor += majorSpan;
@@ -261,13 +261,13 @@ namespace TimelinerNet
             {
                 stackPanel_Threads.Children.Add(new Border
                 {
-                    BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0xFF, 0x00)),
+                    BorderBrush = SystemColors.ActiveBorderBrush,
                     BorderThickness = new Thickness(0, 0, 0, 1),
                     Child = new TextBlock { Text = item.Value.Name, Margin = new Thickness(2) },
                 });
                 var bd = new Border
                 {
-                    BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0xFF, 0x00)),
+                    BorderBrush = SystemColors.ActiveBorderBrush,
                     BorderThickness = new Thickness(0, 0, 0, 1),
                     Child = new Grid()
                 };
@@ -280,8 +280,8 @@ namespace TimelinerNet
                             Width = (job.Value.End - job.Value.Begin).ToPixcel(span, xSize),
                             Margin = new Thickness((job.Value.Begin - LeftEdge).ToPixcel(span, xSize), 0, 0, 0),
                             CornerRadius = new CornerRadius(4),
-                            Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0xFF, 0xFF)),
-                            BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x00, 0xFF)),
+                            Background = job.Value.Color.Clone(),
+                            BorderBrush = SystemColors.ActiveBorderBrush,
                             BorderThickness = new Thickness(1),
                             HorizontalAlignment = HorizontalAlignment.Left,
                             VerticalAlignment = VerticalAlignment.Center,

@@ -6,8 +6,20 @@
         xmlns:tl="clr-namespace:TimelinerNet;assembly=TimelinerNet"
         xmlns:local="clr-namespace:Example"
         mc:Ignorable="d"
-        Title="Example" Height="200" Width="600">
-    <Grid>
-        <tl:Timeliner Items="{Binding Items, Mode=OneWay}" FontSize="12"/>
-    </Grid>
+        Title="Example" Height="300" Width="600">
+    <StackPanel>
+        <tl:Timeliner Items="{Binding Items, Mode=OneWay}" FontSize="12" Margin="4"/>
+        <TextBlock Foreground="White" Text="asd"/>
+        <Button Content="another element"/>
+        <ListView>
+            <ListView.View>
+                <GridView>
+                    <GridView.Columns>
+                        <GridViewColumn Header="another element" Width="200"/>
+                    </GridView.Columns>
+                </GridView>
+            </ListView.View>
+            <ListViewItem Content="another element"/>
+        </ListView>
+    </StackPanel>
 </Window>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,7 +31,8 @@ namespace Example
                         {
                             Name = "Job",
                             Begin = now - TimeSpan.FromMinutes(30),
-                            End = now - TimeSpan.FromMinutes(15)
+                            End = now - TimeSpan.FromMinutes(15),
+                            Color = Brushes.LightGreen,
                         }
                     },
                     { Guid.NewGuid(), new TimelinerNet.TimelinerJob()
