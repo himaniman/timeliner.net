@@ -62,6 +62,13 @@ namespace Example
                             Begin = now - TimeSpan.FromMinutes(10),
                             End = now + TimeSpan.FromMinutes(10)
                         }
+                    },
+                    { Guid.NewGuid(), new TimelinerNet.TimelinerJob()
+                        {
+                            Name = "Micro",
+                            Begin = now - TimeSpan.FromMinutes(30.1),
+                            End = now - TimeSpan.FromMinutes(30)
+                        }
                     }
                 }
             });

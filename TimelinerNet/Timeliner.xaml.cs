@@ -257,6 +257,15 @@ namespace TimelinerNet
             var span = RightEdge - LeftEdge;
             //var timePerPixcel = span / xSize;
 
+            TextBlock test = new TextBlock
+            {
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Text = "Test",
+            };
+            test.Measure(new Size(100, 100));
+            double heightText = test.DesiredSize.Height;
+
             foreach (var item in Items)
             {
                 stackPanel_Threads.Children.Add(new Border
@@ -264,45 +273,88 @@ namespace TimelinerNet
                     BorderBrush = SystemColors.ActiveBorderBrush,
                     BorderThickness = new Thickness(0, 0, 0, 1),
                     Child = new TextBlock { Text = item.Value.Name, Margin = new Thickness(2) },
+                    Height = heightText + 4,
                 });
                 var bd = new Border
                 {
                     BorderBrush = SystemColors.ActiveBorderBrush,
                     BorderThickness = new Thickness(0, 0, 0, 1),
-                    Child = new Grid()
+                    Child = new Grid(),
+                    Height = heightText + 4,
                 };
                 foreach (var job in item.Value.Jobs)
                 {
                     if (job.Value.End > LeftEdge && job.Value.Begin < RightEdge)
                     {
-                        var br = new Border
+                        double width = (job.Value.End - job.Value.Begin).ToPixcel(span, xSize);
+                        UIElement ui;
+                        if (width > 6)
                         {
-                            Width = (job.Value.End - job.Value.Begin).ToPixcel(span, xSize),
-                            Margin = new Thickness((job.Value.Begin - LeftEdge).ToPixcel(span, xSize), 0, 0, 0),
-                            CornerRadius = new CornerRadius(4),
-                            Background = job.Value.Color.Clone(),
-                            BorderBrush = SystemColors.ActiveBorderBrush,
-                            BorderThickness = new Thickness(1),
-                            HorizontalAlignment = HorizontalAlignment.Left,
-                            VerticalAlignment = VerticalAlignment.Center,
-                            Child = new TextBlock
+                            var br = new Border
+                            {
+                                Width = (job.Value.End - job.Value.Begin).ToPixcel(span, xSize),
+                                Margin = new Thickness((job.Value.Begin - LeftEdge).ToPixcel(span, xSize), 0, 0, 0),
+                                CornerRadius = new CornerRadius(4),
+                                Background = job.Value.Color.Clone(),
+                                BorderBrush = SystemColors.ActiveBorderBrush,
+                                BorderThickness = new Thickness(1),
+                                HorizontalAlignment = HorizontalAlignment.Left,
+                                VerticalAlignment = VerticalAlignment.Center,
+                                Child = new TextBlock
+                                {
+                                    Text = job.Value.Name,
+                                    Margin = new Thickness(1)
+                                }
+                            };
+                            if (br.Margin.Left < 0)
+                            {
+                                br.Width = br.Width + br.Margin.Left;
+                                br.Margin = new Thickness(0);
+                                (br.Child as TextBlock).Text = "<-" + (br.Child as TextBlock).Text;
+                            }
+                            if (br.Margin.Left + br.Width > xSize)
+                            {
+                                //br.Width = br.Margin.Left - br.Width;
+                                (br.Child as TextBlock).Text = (br.Child as TextBlock).Text + "->";
+                            }
+                            ui = br;
+                        }
+                        else
+                        {
+                            var gr = new Grid
+                            {
+                                Margin = new Thickness((job.Value.Begin - LeftEdge).ToPixcel(span, xSize), 0, 0, 0),
+                            };
+                            var ln = new Path
+                            {
+                                Data = Geometry.Parse($"M 0 {heightText} L3 {heightText - 3} L6 {heightText} L3 {heightText - 3} L3 3 L6 0 L3 3 L0 0 L3 3 L3 {heightText - 3} Z"),
+                                Width = 6,
+                                Height = heightText,
+                                Stroke = job.Value.Color.Clone(),
+                                StrokeThickness = 2,
+                                //Width = (job.Value.End - job.Value.Begin).ToPixcel(span, xSize),
+                                //CornerRadius = new CornerRadius(4),
+                                //Background = job.Value.Color.Clone(),
+                                //BorderBrush = SystemColors.ActiveBorderBrush,
+                                //BorderThickness = new Thickness(1),
+                                HorizontalAlignment = HorizontalAlignment.Left,
+                                VerticalAlignment = VerticalAlignment.Center,
+                                //Child = new TextBlock
+                                //{
+                                //    Text = job.Value.Name,
+                                //    Margin = new Thickness(1)
+                                //}
+                            };
+                            var tx = new TextBlock
                             {
                                 Text = job.Value.Name,
-                                Margin = new Thickness(1)
-                            }
-                        };
-                        if (br.Margin.Left < 0)
-                        {
-                            br.Width = br.Width + br.Margin.Left;
-                            br.Margin = new Thickness(0);
-                            (br.Child as TextBlock).Text = "<-" + (br.Child as TextBlock).Text;
+                                Margin = new Thickness(6, 2, 2, 2)
+                            };
+                            gr.Children.Add(ln);
+                            gr.Children.Add(tx);
+                            ui = gr;
                         }
-                        if (br.Margin.Left + br.Width > xSize)
-                        {
-                            //br.Width = br.Margin.Left - br.Width;
-                            (br.Child as TextBlock).Text = (br.Child as TextBlock).Text + "->";
-                        }
-                    (bd.Child as Grid).Children.Add(br);
+                    (bd.Child as Grid).Children.Add(ui);
                     }
                 }
 
