@@ -282,7 +282,8 @@ namespace TimelinerNet
                     Child = new Grid(),
                     Height = heightText + 4,
                 };
-                foreach (var job in item.Value.Jobs)
+                double lastItemLeftEdge = double.NaN;
+                foreach (var job in item.Value.Jobs.OrderByDescending(x => x.Value.Begin))
                 {
                     if (job.Value.End > LeftEdge && job.Value.Begin < RightEdge)
                     {
@@ -317,6 +318,7 @@ namespace TimelinerNet
                                 //br.Width = br.Margin.Left - br.Width;
                                 (br.Child as TextBlock).Text = (br.Child as TextBlock).Text + "->";
                             }
+                            lastItemLeftEdge = (job.Value.Begin - LeftEdge).ToPixcel(span, xSize);
                             ui = br;
                         }
                         else
@@ -332,26 +334,28 @@ namespace TimelinerNet
                                 Height = heightText,
                                 Stroke = job.Value.Color.Clone(),
                                 StrokeThickness = 2,
-                                //Width = (job.Value.End - job.Value.Begin).ToPixcel(span, xSize),
-                                //CornerRadius = new CornerRadius(4),
-                                //Background = job.Value.Color.Clone(),
-                                //BorderBrush = SystemColors.ActiveBorderBrush,
-                                //BorderThickness = new Thickness(1),
                                 HorizontalAlignment = HorizontalAlignment.Left,
                                 VerticalAlignment = VerticalAlignment.Center,
-                                //Child = new TextBlock
-                                //{
-                                //    Text = job.Value.Name,
-                                //    Margin = new Thickness(1)
-                                //}
                             };
-                            var tx = new TextBlock
+                            test = new TextBlock
                             {
+                                HorizontalAlignment = HorizontalAlignment.Center,
+                                VerticalAlignment = VerticalAlignment.Bottom,
                                 Text = job.Value.Name,
-                                Margin = new Thickness(6, 2, 2, 2)
                             };
                             gr.Children.Add(ln);
-                            gr.Children.Add(tx);
+
+                            test.Measure(new Size(100, 100));
+                            var oversize = (job.Value.Begin - LeftEdge).ToPixcel(span, xSize) + test.DesiredSize.Width + 8 > lastItemLeftEdge;
+                            if (!oversize)
+                            {
+                                var tx = new TextBlock
+                                {
+                                    Text = job.Value.Name,
+                                    Margin = new Thickness(6, 2, 2, 2)
+                                };
+                                gr.Children.Add(tx);
+                            }
                             ui = gr;
                         }
                     (bd.Child as Grid).Children.Add(ui);
