@@ -40,7 +40,9 @@
                   PreviewMouseDown="previewMouseDown" PreviewMouseUp="previewMouseUp" 
                   PreviewMouseMove="previewMouseMove" PreviewMouseWheel="previewMouseWheel">
                 <Grid x:Name="grid_MainGrid" ClipToBounds="True"/>
-                <StackPanel x:Name="stackPanel_MainData" ClipToBounds="True" CanVerticallyScroll="True"/>
+                <ScrollViewer x:Name="scrollViewer_MainData" VerticalScrollBarVisibility="Hidden">
+                    <StackPanel x:Name="stackPanel_MainData" ClipToBounds="True"/>
+                </ScrollViewer>
             </Grid>
         </Border>
     </Grid>

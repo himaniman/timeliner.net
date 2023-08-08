@@ -28,7 +28,6 @@ namespace TimelinerNet
         private DateTime initCaptureLeftEdge;
         private DateTime initCaptureRightEdge;
         private TimeSpan initCaptureScalePx;
-        private double threadsScrollOffset = 0;
 
         public bool IsOnManipulate { get; set; }
 
@@ -127,7 +126,7 @@ namespace TimelinerNet
 
         private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            threadsScrollOffset = e.VerticalOffset;
+            scrollViewer_MainData.ScrollToVerticalOffset(e.VerticalOffset);
         }
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
