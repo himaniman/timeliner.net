@@ -278,12 +278,42 @@ namespace TimelinerNet
                         {
                             Margin = new Thickness((job.Value.Begin - LeftEdge).ToPixcel(span, xSize), 0, 0, 0),
                             Background = Brushes.Transparent,
-                            //Width = (job.Value.End - job.Value.Begin).ToPixcel(span, xSize),
                             HorizontalAlignment = HorizontalAlignment.Left,
                         };
                         gr.PreviewMouseDown += (s, e) =>
                         {
-                            (s as Grid).Background = Brushes.Red;
+                            if ((s as Grid).Children[0] is Border)
+                            {
+                                ((s as Grid).Children[0] as Border).Background = new LinearGradientBrush
+                                {
+                                    MappingMode = BrushMappingMode.Absolute,
+                                    EndPoint = new Point(8, 8),
+                                    SpreadMethod = GradientSpreadMethod.Repeat,
+                                    GradientStops =
+                                    {
+                                        new GradientStop
+                                        {
+                                            Offset = 0,
+                                            Color = ((SolidColorBrush)((s as Grid).Children[0] as Border).Background).Color
+                                        },
+                                        new GradientStop
+                                        {
+                                            Offset = 0.5,
+                                            Color = ((SolidColorBrush)((s as Grid).Children[0] as Border).Background).Color
+                                        },
+                                        new GradientStop
+                                        {
+                                            Offset = 0.5,
+                                            Color = Colors.LightGray
+                                        },
+                                        new GradientStop
+                                        {
+                                            Offset = 1,
+                                            Color = Colors.LightGray
+                                        }
+                                    }
+                                };
+                            }
                             e.Handled = true;
                         };
                         if (width > 6)
