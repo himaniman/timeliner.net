@@ -356,6 +356,7 @@ namespace TimelinerNet
                                 };
                                 gr.Children.Add(tx);
                             }
+                            lastItemLeftEdge = (job.Value.Begin - LeftEdge).ToPixcel(span, xSize);
                             ui = gr;
                         }
                     (bd.Child as Grid).Children.Add(ui);
