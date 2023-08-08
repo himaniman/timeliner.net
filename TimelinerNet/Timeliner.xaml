@@ -7,6 +7,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              SizeChanged="UserControl_SizeChanged" Loaded="UserControl_Loaded" Background="{DynamicResource {x:Static SystemColors.ActiveCaptionBrushKey}}">
+    <UserControl.Resources>
+        <DataTemplate x:Key="defaultTemplate">
+            <TextBlock Text="{Binding Name}"/>
+        </DataTemplate>
+    </UserControl.Resources>
     <Grid Height="{Binding Path=Height, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="180"/>
@@ -36,14 +41,20 @@
         </Border>
         <Border Grid.Row="1" Grid.Column="1" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" 
                     BorderBrush="Black" BorderThickness="0">
-            <Grid Background="#00000000" 
+            <Grid Background="#00000000"
                   PreviewMouseDown="previewMouseDown" PreviewMouseUp="previewMouseUp" 
                   PreviewMouseMove="previewMouseMove" PreviewMouseWheel="previewMouseWheel">
-                <Grid x:Name="grid_MainGrid" ClipToBounds="True"/>
+                <Grid x:Name="grid_MainGrid" ClipToBounds="True" Focusable="True"/>
                 <ScrollViewer x:Name="scrollViewer_MainData" VerticalScrollBarVisibility="Hidden">
                     <StackPanel x:Name="stackPanel_MainData" ClipToBounds="True"/>
                 </ScrollViewer>
             </Grid>
         </Border>
+        <Popup x:Name="popup_info" Placement="Mouse" AllowsTransparency="True" StaysOpen="False" PopupAnimation="Slide">
+            <Border SnapsToDevicePixels="True"
+                    Background="White" BorderBrush="LightGray" BorderThickness="2" CornerRadius="4">
+                <ContentControl x:Name="cc_info" Margin="2" PreviewMouseDown="previewMouseUp"/>
+            </Border>
+        </Popup>
     </Grid>
 </UserControl>

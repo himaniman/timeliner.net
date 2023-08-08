@@ -20,6 +20,15 @@
             </ListView.View>
             <ListViewItem Content="another element"/>
         </ListView>
-        <tl:Timeliner DockPanel.Dock="Top" Items="{Binding Items, Mode=OneWay}" FontSize="16" Margin="4"/>
+        <tl:Timeliner DockPanel.Dock="Top" Items="{Binding Items, Mode=OneWay}" FontSize="16" Margin="4">
+            <tl:Timeliner.DataTemplatePopup>
+                <DataTemplate>
+                    <StackPanel>
+                        <TextBlock Text="{Binding Name}"/>
+                        <TextBlock Text="{Binding CustomObject.CustomString}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </tl:Timeliner.DataTemplatePopup>
+        </tl:Timeliner>
     </DockPanel>
 </Window>

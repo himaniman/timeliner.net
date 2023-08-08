@@ -15,5 +15,6 @@ namespace TimelinerNet
         public bool IsEnabled { get; set; }
         public DateTime Begin { get; set; }
         public DateTime End { get; set; }
+        public object CustomObject { get; set; }
     }
 }

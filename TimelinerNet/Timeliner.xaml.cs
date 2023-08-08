@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -31,6 +32,7 @@ namespace TimelinerNet
         private TimeSpan initCaptureScalePx;
 
         public bool IsOnManipulate { get; set; }
+        public bool? TestTEst { get; set; }
 
         public Dictionary<Guid, TimelinerItem> Items
         {
@@ -53,6 +55,19 @@ namespace TimelinerNet
             }
         }
 
+
+
+        public DataTemplate DataTemplatePopup
+        {
+            get { return (DataTemplate)GetValue(DataTemplatePopupProperty); }
+            set { SetValue(DataTemplatePopupProperty, value); }
+        }
+
+        public static readonly DependencyProperty DataTemplatePopupProperty =
+            DependencyProperty.Register("DataTemplatePopup", typeof(DataTemplate), typeof(Timeliner), new PropertyMetadata(null));
+
+
+
         public Timeliner()
         {
             Now = new DateTime(2023, 08, 20, 23, 50, 00);
@@ -72,12 +87,13 @@ namespace TimelinerNet
                 IsOnManipulate = true;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsOnManipulate)));
                 //e.Handled = true;
+
             }
         }
 
         private void previewMouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Released)
+            if (e.LeftButton == MouseButtonState.Released || popup_info.IsOpen)
             {
                 IsOnManipulate = false;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsOnManipulate)));
@@ -286,6 +302,10 @@ namespace TimelinerNet
                             {
                                 ((s as Grid).Children[0] as Border).Background = job.Value.Color.Clone();
                             }
+                            cc_info.ContentTemplate = DataTemplatePopup ?? (DataTemplate)this.Resources["defaultTemplate"];
+                            cc_info.Content = job.Value;
+                            popup_info.IsOpen = true;
+                            Mouse.Capture(cc_info);
                             e.Handled = true;
                         };
                         if (width > 6)
@@ -389,5 +409,16 @@ namespace TimelinerNet
                 stackPanel_MainData.Children.Add(bd);
             }
         }
+
+        //protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
+        //{
+        //    if (popup_info.IsOpen)
+        //    {
+        //        Mouse.Capture(null);
+        //        popup_info.IsOpen = false;
+        //        e.Handled = true;
+        //    }
+        //    else base.OnPreviewMouseDown(e);
+        //}
     }
 }
