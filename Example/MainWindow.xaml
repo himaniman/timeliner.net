@@ -25,7 +25,8 @@
                 <DataTemplate>
                     <StackPanel>
                         <TextBlock Text="{Binding Name}"/>
-                        <TextBlock Text="{Binding CustomObject.CustomString}"/>
+                        <TextBlock Text="{Binding CustomObject.CustomString}" TextWrapping="Wrap"/>
+                        <TextBlock Text="{Binding Begin, StringFormat={}{0:dd.MM.yyyy HH:mm}}"/>
                     </StackPanel>
                 </DataTemplate>
             </tl:Timeliner.DataTemplatePopup>

@@ -33,7 +33,7 @@ namespace Example
                             Begin = now - TimeSpan.FromMinutes(30),
                             End = now - TimeSpan.FromMinutes(15),
                             Color = Brushes.LightGreen,
-                            CustomObject = new { CustomString = "custom template" }
+                            CustomObject = new { CustomString = "custom template\nnew string for template" }
                         }
                     },
                     { Guid.NewGuid(), new TimelinerNet.TimelinerJob()
