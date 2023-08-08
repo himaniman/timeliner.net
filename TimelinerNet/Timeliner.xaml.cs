@@ -28,6 +28,7 @@ namespace TimelinerNet
         private DateTime initCaptureLeftEdge;
         private DateTime initCaptureRightEdge;
         private TimeSpan initCaptureScalePx;
+        private double threadsScrollOffset = 0;
 
         public bool IsOnManipulate { get; set; }
 
@@ -60,11 +61,11 @@ namespace TimelinerNet
             InitializeComponent();
         }
 
-        protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
+        private void previewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed && Mouse.Capture(this as IInputElement))
+            if (e.LeftButton == MouseButtonState.Pressed && Mouse.Capture(sender as IInputElement))
             {
-                initMousePoint = e.GetPosition(this as IInputElement);
+                initMousePoint = e.GetPosition(sender as IInputElement);
                 initCaptureLeftEdge = LeftEdge;
                 initCaptureRightEdge = RightEdge;
                 initCaptureScalePx = (RightEdge - LeftEdge) / grid_Timeline.ActualWidth;
@@ -72,10 +73,9 @@ namespace TimelinerNet
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsOnManipulate)));
                 e.Handled = true;
             }
-            base.OnPreviewMouseDown(e);
         }
 
-        protected override void OnPreviewMouseUp(MouseButtonEventArgs e)
+        private void previewMouseUp(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Released)
             {
@@ -84,33 +84,28 @@ namespace TimelinerNet
                 Mouse.Capture(null);
                 e.Handled = true;
             }
-            base.OnPreviewMouseUp(e);
         }
 
-        protected override void OnPreviewMouseMove(MouseEventArgs e)
+        private void previewMouseMove(object sender, MouseEventArgs e)
         {
             if (IsOnManipulate && e.LeftButton == MouseButtonState.Pressed)
             {
-                double deltapx = initMousePoint.X - e.GetPosition(this as IInputElement).X;
+                double deltapx = initMousePoint.X - e.GetPosition(sender as IInputElement).X;
 
-                
+
                 //var span = RightEdge - LeftEdge;
                 LeftEdge = initCaptureLeftEdge + deltapx * initCaptureScalePx;
                 RightEdge = initCaptureRightEdge + deltapx * initCaptureScalePx;
                 RedrawGrid();
                 e.Handled = true;
             }
-            base.OnPreviewMouseMove(e);
         }
 
-        protected override void OnPreviewMouseWheel(MouseWheelEventArgs e)
+        private void previewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed || Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
             {
-                //if (e.Delta < 0) OffsetValue(-1);
-                //else OffsetValue(1);
-                //initMousePoint = e.GetPosition(this as IInputElement);
-                //initValue = Value;
+
             }
             else
             {
@@ -125,24 +120,14 @@ namespace TimelinerNet
                     LeftEdge += span * 0.05;
                     RightEdge -= span * 0.05;
                 }
-
-                //double newSpan;
-                //if (SmoothSpan)
-                //{
-                //    if (e.Delta < 0) newSpan = Span * 1.1;
-                //    else newSpan = Span / 1.1;
-                //}
-                //else
-                //{
-                //    if (e.Delta < 0) newSpan = Near125(Span * 2);
-                //    else newSpan = Near125(Span / 2);
-                //}
-                //SetNewSpan(newSpan);
             }
             RedrawGrid();
-            //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ValueString)));
             e.Handled = true;
-            base.OnPreviewMouseWheel(e);
+        }
+
+        private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            threadsScrollOffset = e.VerticalOffset;
         }
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -262,6 +247,7 @@ namespace TimelinerNet
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Bottom,
                 Text = "Test",
+                FontSize = FontSize
             };
             test.Measure(new Size(100, 100));
             double heightText = test.DesiredSize.Height;
@@ -342,6 +328,7 @@ namespace TimelinerNet
                                 HorizontalAlignment = HorizontalAlignment.Center,
                                 VerticalAlignment = VerticalAlignment.Bottom,
                                 Text = job.Value.Name,
+                                FontSize = FontSize
                             };
                             gr.Children.Add(ln);
 

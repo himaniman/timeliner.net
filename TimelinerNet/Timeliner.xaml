@@ -7,37 +7,41 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              SizeChanged="UserControl_SizeChanged" Loaded="UserControl_Loaded" Background="{DynamicResource {x:Static SystemColors.ActiveCaptionBrushKey}}">
-    <StackPanel>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="180"/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <Border Background="{Binding Path=Background, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
+    <Grid Height="{Binding Path=Height, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="180"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Border Background="{Binding Path=Background, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
                     BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" BorderThickness="0,0,1,1">
-                <StackPanel>
-                    <TextBlock Text="topleft" Margin="2"/>
-                </StackPanel>
-            </Border>
-            <Border Grid.Row="1" Background="{Binding Path=Background, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
+            <StackPanel>
+                <TextBlock Text="topleft" Margin="2"/>
+            </StackPanel>
+        </Border>
+        <Border Grid.Row="1" Background="{Binding Path=Background, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
                     BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" BorderThickness="0,1,1,0">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" FlowDirection="RightToLeft" ScrollChanged="ScrollViewer_ScrollChanged">
                 <StackPanel x:Name="stackPanel_Threads"/>
-            </Border>
-            <Border Grid.Column="1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" 
+            </ScrollViewer>
+        </Border>
+        <Border Grid.Column="1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" 
                     BorderBrush="Black" BorderThickness="0">
-                <Grid x:Name="grid_Timeline" ClipToBounds="True"/>
-            </Border>
-            <Border Grid.Row="1" Grid.Column="1" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" 
+            <Grid x:Name="grid_Timeline" Background="#00000000" ClipToBounds="True" 
+                  PreviewMouseDown="previewMouseDown" PreviewMouseUp="previewMouseUp" 
+                  PreviewMouseMove="previewMouseMove" PreviewMouseWheel="previewMouseWheel"/>
+        </Border>
+        <Border Grid.Row="1" Grid.Column="1" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" 
                     BorderBrush="Black" BorderThickness="0">
-                <Grid>
-                    <Grid x:Name="grid_MainGrid" ClipToBounds="True"/>
-                    <StackPanel x:Name="stackPanel_MainData" ClipToBounds="True"/>
-                </Grid>
-            </Border>
-        </Grid>
-    </StackPanel>
+            <Grid Background="#00000000" 
+                  PreviewMouseDown="previewMouseDown" PreviewMouseUp="previewMouseUp" 
+                  PreviewMouseMove="previewMouseMove" PreviewMouseWheel="previewMouseWheel">
+                <Grid x:Name="grid_MainGrid" ClipToBounds="True"/>
+                <StackPanel x:Name="stackPanel_MainData" ClipToBounds="True" CanVerticallyScroll="True"/>
+            </Grid>
+        </Border>
+    </Grid>
 </UserControl>

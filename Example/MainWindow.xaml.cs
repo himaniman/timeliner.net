@@ -72,6 +72,62 @@ namespace Example
                     }
                 }
             });
+            Items.Add(Guid.NewGuid(), new TimelinerNet.TimelinerItem()
+            {
+                Name = "Item3",
+                Jobs = new Dictionary<Guid, TimelinerNet.TimelinerJob>()
+                {
+                    { Guid.NewGuid(), new TimelinerNet.TimelinerJob()
+                        {
+                            Name = "Job123",
+                            Begin = now - TimeSpan.FromMinutes(20),
+                            End = now - TimeSpan.FromMinutes(18)
+                        }
+                    },
+                    { Guid.NewGuid(), new TimelinerNet.TimelinerJob()
+                        {
+                            Name = "Job456",
+                            Begin = now - TimeSpan.FromMinutes(10),
+                            End = now + TimeSpan.FromMinutes(10)
+                        }
+                    },
+                    { Guid.NewGuid(), new TimelinerNet.TimelinerJob()
+                        {
+                            Name = "Micro",
+                            Begin = now - TimeSpan.FromMinutes(30.1),
+                            End = now - TimeSpan.FromMinutes(30)
+                        }
+                    }
+                }
+            });
+            Items.Add(Guid.NewGuid(), new TimelinerNet.TimelinerItem()
+            {
+                Name = "Item4",
+                Jobs = new Dictionary<Guid, TimelinerNet.TimelinerJob>()
+                {
+                    { Guid.NewGuid(), new TimelinerNet.TimelinerJob()
+                        {
+                            Name = "Job123",
+                            Begin = now - TimeSpan.FromMinutes(20),
+                            End = now - TimeSpan.FromMinutes(18)
+                        }
+                    },
+                    { Guid.NewGuid(), new TimelinerNet.TimelinerJob()
+                        {
+                            Name = "Job456",
+                            Begin = now - TimeSpan.FromMinutes(10),
+                            End = now + TimeSpan.FromMinutes(10)
+                        }
+                    },
+                    { Guid.NewGuid(), new TimelinerNet.TimelinerJob()
+                        {
+                            Name = "Micro",
+                            Begin = now - TimeSpan.FromMinutes(30.1),
+                            End = now - TimeSpan.FromMinutes(30)
+                        }
+                    }
+                }
+            });
             DataContext = this;
             InitializeComponent();
         }

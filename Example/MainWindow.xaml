@@ -6,12 +6,11 @@
         xmlns:tl="clr-namespace:TimelinerNet;assembly=TimelinerNet"
         xmlns:local="clr-namespace:Example"
         mc:Ignorable="d"
-        Title="Example" Height="300" Width="600">
-    <StackPanel>
-        <tl:Timeliner Items="{Binding Items, Mode=OneWay}" FontSize="12" Margin="4"/>
-        <TextBlock Foreground="White" Text="asd"/>
-        <Button Content="another element"/>
-        <ListView>
+        Title="Example" Height="250" Width="600">
+    <DockPanel>
+        <TextBlock DockPanel.Dock="Bottom" Foreground="White" Text="asd"/>
+        <Button DockPanel.Dock="Bottom" Content="another element"/>
+        <ListView DockPanel.Dock="Bottom">
             <ListView.View>
                 <GridView>
                     <GridView.Columns>
@@ -21,5 +20,6 @@
             </ListView.View>
             <ListViewItem Content="another element"/>
         </ListView>
-    </StackPanel>
+        <tl:Timeliner DockPanel.Dock="Top" Items="{Binding Items, Mode=OneWay}" FontSize="16" Margin="4"/>
+    </DockPanel>
 </Window>
