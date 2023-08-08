@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -70,7 +71,7 @@ namespace TimelinerNet
                 initCaptureScalePx = (RightEdge - LeftEdge) / grid_Timeline.ActualWidth;
                 IsOnManipulate = true;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsOnManipulate)));
-                e.Handled = true;
+                //e.Handled = true;
             }
         }
 
@@ -273,13 +274,24 @@ namespace TimelinerNet
                     if (job.Value.End > LeftEdge && job.Value.Begin < RightEdge)
                     {
                         double width = (job.Value.End - job.Value.Begin).ToPixcel(span, xSize);
-                        UIElement ui;
+                        var gr = new Grid
+                        {
+                            Margin = new Thickness((job.Value.Begin - LeftEdge).ToPixcel(span, xSize), 0, 0, 0),
+                            Background = Brushes.Transparent,
+                            //Width = (job.Value.End - job.Value.Begin).ToPixcel(span, xSize),
+                            HorizontalAlignment = HorizontalAlignment.Left,
+                        };
+                        gr.PreviewMouseDown += (s, e) =>
+                        {
+                            (s as Grid).Background = Brushes.Red;
+                            e.Handled = true;
+                        };
                         if (width > 6)
                         {
                             var br = new Border
                             {
                                 Width = (job.Value.End - job.Value.Begin).ToPixcel(span, xSize),
-                                Margin = new Thickness((job.Value.Begin - LeftEdge).ToPixcel(span, xSize), 0, 0, 0),
+                                //Margin = new Thickness((job.Value.Begin - LeftEdge).ToPixcel(span, xSize), 0, 0, 0),
                                 CornerRadius = new CornerRadius(4),
                                 Background = job.Value.Color.Clone(),
                                 BorderBrush = SystemColors.ActiveBorderBrush,
@@ -304,14 +316,10 @@ namespace TimelinerNet
                                 (br.Child as TextBlock).Text = (br.Child as TextBlock).Text + "->";
                             }
                             lastItemLeftEdge = (job.Value.Begin - LeftEdge).ToPixcel(span, xSize);
-                            ui = br;
+                            gr.Children.Add(br);
                         }
                         else
                         {
-                            var gr = new Grid
-                            {
-                                Margin = new Thickness((job.Value.Begin - LeftEdge).ToPixcel(span, xSize), 0, 0, 0),
-                            };
                             var ln = new Path
                             {
                                 Data = Geometry.Parse($"M 0 {heightText} L3 {heightText - 3} L6 {heightText} L3 {heightText - 3} L3 3 L6 0 L3 3 L0 0 L3 3 L3 {heightText - 3} Z"),
@@ -343,9 +351,8 @@ namespace TimelinerNet
                                 gr.Children.Add(tx);
                             }
                             lastItemLeftEdge = (job.Value.Begin - LeftEdge).ToPixcel(span, xSize);
-                            ui = gr;
                         }
-                    (bd.Child as Grid).Children.Add(ui);
+                    (bd.Child as Grid).Children.Add(gr);
                     }
                 }
 
