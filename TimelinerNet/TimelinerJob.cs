@@ -11,7 +11,7 @@ namespace TimelinerNet
         public string TextDown { get; set; }
         public string TextRight { get; set; }
         public Brush Color { get; set; } = SystemColors.ActiveCaptionBrush;
-        public bool IsCrossColor { get; set; }
+        public bool IsStripedColor { get; set; }
         public bool IsEnabled { get; set; }
         public DateTime Begin { get; set; }
         public DateTime End { get; set; }

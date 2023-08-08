@@ -41,6 +41,15 @@ namespace Example
                             Begin = now - TimeSpan.FromMinutes(45),
                             End = now - TimeSpan.FromMinutes(35)
                         }
+                    },
+                    { Guid.NewGuid(), new TimelinerNet.TimelinerJob()
+                        {
+                            Name = "Job3",
+                            Begin = now - TimeSpan.FromMinutes(10),
+                            End = now + TimeSpan.FromMinutes(35),
+                            IsStripedColor = true,
+                            Color = Brushes.DarkRed,
+                        }
                     }
                 }
             });

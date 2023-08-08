@@ -284,35 +284,7 @@ namespace TimelinerNet
                         {
                             if ((s as Grid).Children[0] is Border)
                             {
-                                ((s as Grid).Children[0] as Border).Background = new LinearGradientBrush
-                                {
-                                    MappingMode = BrushMappingMode.Absolute,
-                                    EndPoint = new Point(8, 8),
-                                    SpreadMethod = GradientSpreadMethod.Repeat,
-                                    GradientStops =
-                                    {
-                                        new GradientStop
-                                        {
-                                            Offset = 0,
-                                            Color = ((SolidColorBrush)((s as Grid).Children[0] as Border).Background).Color
-                                        },
-                                        new GradientStop
-                                        {
-                                            Offset = 0.5,
-                                            Color = ((SolidColorBrush)((s as Grid).Children[0] as Border).Background).Color
-                                        },
-                                        new GradientStop
-                                        {
-                                            Offset = 0.5,
-                                            Color = Colors.LightGray
-                                        },
-                                        new GradientStop
-                                        {
-                                            Offset = 1,
-                                            Color = Colors.LightGray
-                                        }
-                                    }
-                                };
+                                ((s as Grid).Children[0] as Border).Background = job.Value.Color.Clone();
                             }
                             e.Handled = true;
                         };
@@ -321,9 +293,37 @@ namespace TimelinerNet
                             var br = new Border
                             {
                                 Width = (job.Value.End - job.Value.Begin).ToPixcel(span, xSize),
-                                //Margin = new Thickness((job.Value.Begin - LeftEdge).ToPixcel(span, xSize), 0, 0, 0),
                                 CornerRadius = new CornerRadius(4),
-                                Background = job.Value.Color.Clone(),
+                                Background = !job.Value.IsStripedColor ? job.Value.Color.Clone() 
+                                    : new LinearGradientBrush
+                                    {
+                                        MappingMode = BrushMappingMode.Absolute,
+                                        EndPoint = new Point(8, 8),
+                                        SpreadMethod = GradientSpreadMethod.Repeat,
+                                        GradientStops =
+                                        {
+                                            new GradientStop
+                                            {
+                                                Offset = 0,
+                                                Color = ((SolidColorBrush)job.Value.Color).Color
+                                            },
+                                            new GradientStop
+                                            {
+                                                Offset = 0.5,
+                                                Color = ((SolidColorBrush)job.Value.Color).Color
+                                            },
+                                            new GradientStop
+                                            {
+                                                Offset = 0.5,
+                                                Color = Colors.LightGray
+                                            },
+                                            new GradientStop
+                                            {
+                                                Offset = 1,
+                                                Color = Colors.LightGray
+                                            }
+                                        }
+                                    },
                                 BorderBrush = SystemColors.ActiveBorderBrush,
                                 BorderThickness = new Thickness(1),
                                 HorizontalAlignment = HorizontalAlignment.Left,
@@ -334,13 +334,13 @@ namespace TimelinerNet
                                     Margin = new Thickness(1)
                                 }
                             };
-                            if (br.Margin.Left < 0)
+                            if (gr.Margin.Left < 0)
                             {
-                                br.Width = br.Width + br.Margin.Left;
-                                br.Margin = new Thickness(0);
+                                br.Width = br.Width + gr.Margin.Left;
+                                gr.Margin = new Thickness(0);
                                 (br.Child as TextBlock).Text = "<-" + (br.Child as TextBlock).Text;
                             }
-                            if (br.Margin.Left + br.Width > xSize)
+                            if (gr.Margin.Left + br.Width > xSize)
                             {
                                 //br.Width = br.Margin.Left - br.Width;
                                 (br.Child as TextBlock).Text = (br.Child as TextBlock).Text + "->";
