@@ -267,19 +267,22 @@ namespace TimelinerNet
 
             foreach (var item in Items)
             {
+                var isTextUp = (item.Value.Jobs?.Any(x => !string.IsNullOrEmpty(x.Value.TextUp)) ?? false);
+                var isTextDown = (item.Value.Jobs?.Any(x => !string.IsNullOrEmpty(x.Value.TextDown)) ?? false);
+                var heightItem = heightText + 4 + (isTextUp ? heightText + 2 : 0);
                 stackPanel_Threads.Children.Add(new Border
                 {
                     BorderBrush = SystemColors.ActiveBorderBrush,
                     BorderThickness = new Thickness(0, 0, 0, 1),
                     Child = new TextBlock { Text = item.Value.Name, Margin = new Thickness(2) },
-                    Height = heightText + 4,
+                    Height = heightItem,
                 });
                 var bd = new Border
                 {
                     BorderBrush = SystemColors.ActiveBorderBrush,
                     BorderThickness = new Thickness(0, 0, 0, 1),
                     Child = new Grid(),
-                    Height = heightText + 4,
+                    Height = heightItem,
                 };
                 double lastItemLeftEdge = double.NaN;
                 foreach (var job in item.Value.Jobs.OrderByDescending(x => x.Value.Begin))
@@ -311,6 +314,7 @@ namespace TimelinerNet
                             var br = new Border
                             {
                                 Width = (job.Value.End - job.Value.Begin).ToPixcel(span, xSize),
+                                Margin = new Thickness(0, isTextUp ? heightText : 0, 0, isTextDown ? heightText : 0),
                                 CornerRadius = new CornerRadius(4),
                                 Background = !job.Value.IsStripedColor ? job.Value.Color.Clone() 
                                     : new LinearGradientBrush
@@ -352,6 +356,29 @@ namespace TimelinerNet
                                     Margin = new Thickness(1)
                                 }
                             };
+                            if (!string.IsNullOrEmpty(job.Value.TextUp))
+                            {
+                                test = new TextBlock
+                                {
+                                    HorizontalAlignment = HorizontalAlignment.Center,
+                                    VerticalAlignment = VerticalAlignment.Bottom,
+                                    Text = job.Value.TextUp,
+                                    FontSize = FontSize
+                                };
+                                test.Measure(new Size(100, 100));
+                                var oversize = (job.Value.Begin - LeftEdge).ToPixcel(span, xSize) + test.DesiredSize.Width + 8 > lastItemLeftEdge;
+                                
+                                if (!oversize)
+                                {
+                                    var textUp = new TextBlock
+                                    {
+                                        Text = job.Value.TextUp,
+                                        Margin = new Thickness(0, 0, 0, heightText + (isTextDown ? heightText : 0))
+                                    };
+                                    gr.Children.Add(textUp);
+                                }
+                            }
+
                             if (gr.Margin.Left < 0)
                             {
                                 br.Width = br.Width + gr.Margin.Left;
@@ -368,16 +395,19 @@ namespace TimelinerNet
                         }
                         else
                         {
+                            var height = heightItem - 4;
                             var ln = new Path
                             {
-                                Data = Geometry.Parse($"M 0 {heightText} L3 {heightText - 3} L6 {heightText} L3 {heightText - 3} L3 3 L6 0 L3 3 L0 0 L3 3 L3 {heightText - 3} Z"),
+                                Data = Geometry.Parse($"M 0 {height} L3 {height - 3} L6 {height} L3 {height - 3} L3 3 L6 0 L3 3 L0 0 L3 3 L3 {height - 3} Z"),
                                 Width = 6,
-                                Height = heightText,
+                                Height = height,
                                 Stroke = job.Value.Color.Clone(),
                                 StrokeThickness = 2,
                                 HorizontalAlignment = HorizontalAlignment.Left,
                                 VerticalAlignment = VerticalAlignment.Center,
                             };
+                            gr.Children.Add(ln);
+
                             test = new TextBlock
                             {
                                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -385,16 +415,15 @@ namespace TimelinerNet
                                 Text = job.Value.Name,
                                 FontSize = FontSize
                             };
-                            gr.Children.Add(ln);
-
                             test.Measure(new Size(100, 100));
+
                             var oversize = (job.Value.Begin - LeftEdge).ToPixcel(span, xSize) + test.DesiredSize.Width + 8 > lastItemLeftEdge;
                             if (!oversize)
                             {
                                 var tx = new TextBlock
                                 {
                                     Text = job.Value.Name,
-                                    Margin = new Thickness(6, 2, 2, 2)
+                                    Margin = new Thickness(6, isTextUp ? heightText : 0, 0, isTextDown ? heightText : 0)
                                 };
                                 gr.Children.Add(tx);
                             }
