@@ -123,16 +123,24 @@ namespace TimelinerNet
             }
             else
             {
+                var xSize = grid_Timeline.ActualWidth;
+                var posx = e.GetPosition(sender as IInputElement).X;
+                var weight = 0.5;
+                if (posx >= 0 && posx < xSize)
+                {
+                    weight = posx / xSize;
+                }
+
                 var span = RightEdge - LeftEdge;
                 if (e.Delta < 0)
                 {
-                    LeftEdge -= span * 0.05;
-                    RightEdge += span * 0.05;
+                    LeftEdge -= span * 0.05 * weight;
+                    RightEdge += span * 0.05 * (1 - weight);
                 }
                 else
                 {
-                    LeftEdge += span * 0.05;
-                    RightEdge -= span * 0.05;
+                    LeftEdge += span * 0.05 * weight;
+                    RightEdge -= span * 0.05 * (1 - weight);
                 }
             }
             RedrawGrid();
