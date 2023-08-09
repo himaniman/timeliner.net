@@ -78,7 +78,7 @@ namespace TimelinerNet
 
         private void previewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed && Mouse.Capture(sender as IInputElement))
+            if (e.LeftButton == MouseButtonState.Pressed && Mouse.Capture(sender as IInputElement) && !popup_info.IsOpen)
             {
                 initMousePoint = e.GetPosition(sender as IInputElement);
                 initCaptureLeftEdge = LeftEdge;
@@ -93,9 +93,10 @@ namespace TimelinerNet
 
         private void previewMouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Released || popup_info.IsOpen)
+            if (e.LeftButton == MouseButtonState.Released)
             {
                 IsOnManipulate = false;
+                //popup_info.IsOpen = false;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsOnManipulate)));
                 Mouse.Capture(null);
                 e.Handled = true;
@@ -104,12 +105,9 @@ namespace TimelinerNet
 
         private void previewMouseMove(object sender, MouseEventArgs e)
         {
-            if (IsOnManipulate && e.LeftButton == MouseButtonState.Pressed)
+            if (IsOnManipulate && e.LeftButton == MouseButtonState.Pressed && !popup_info.IsOpen)
             {
                 double deltapx = initMousePoint.X - e.GetPosition(sender as IInputElement).X;
-
-
-                //var span = RightEdge - LeftEdge;
                 LeftEdge = initCaptureLeftEdge + deltapx * initCaptureScalePx;
                 RightEdge = initCaptureRightEdge + deltapx * initCaptureScalePx;
                 RedrawGrid();
@@ -256,8 +254,7 @@ namespace TimelinerNet
             stackPanel_MainData.Children.Clear();
 
             var span = RightEdge - LeftEdge;
-            //var timePerPixcel = span / xSize;
-
+            
             TextBlock test = new TextBlock
             {
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -298,16 +295,17 @@ namespace TimelinerNet
                         };
                         gr.PreviewMouseDown += (s, e) =>
                         {
-                            if ((s as Grid).Children[0] is Border)
-                            {
-                                ((s as Grid).Children[0] as Border).Background = job.Value.Color.Clone();
-                            }
+                            //if ((s as Grid).Children[0] is Border)
+                            //{
+                            //    ((s as Grid).Children[0] as Border).Background = job.Value.Color.Clone();
+                            //}
                             cc_info.ContentTemplate = DataTemplatePopup ?? (DataTemplate)this.Resources["defaultTemplate"];
                             cc_info.Content = job.Value;
                             popup_info.IsOpen = true;
-                            Mouse.Capture(cc_info);
+                            Mouse.Capture(this);
                             e.Handled = true;
                         };
+
                         if (width > 6)
                         {
                             var br = new Border
@@ -410,15 +408,16 @@ namespace TimelinerNet
             }
         }
 
-        //protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
-        //{
-        //    if (popup_info.IsOpen)
-        //    {
-        //        Mouse.Capture(null);
-        //        popup_info.IsOpen = false;
-        //        e.Handled = true;
-        //    }
-        //    else base.OnPreviewMouseDown(e);
-        //}
+        protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
+        {
+            if (popup_info.IsOpen)
+            {
+                Mouse.Capture(null);
+                popup_info.IsOpen = false;
+                IsOnManipulate = false;
+                e.Handled = true;
+            }
+            else base.OnPreviewMouseDown(e);
+        }
     }
 }
