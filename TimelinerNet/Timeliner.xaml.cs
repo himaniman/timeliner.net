@@ -282,7 +282,12 @@ namespace TimelinerNet
                 {
                     BorderBrush = SystemColors.ActiveBorderBrush,
                     BorderThickness = new Thickness(0, 0, 0, 1),
-                    Child = new TextBlock { Text = item.Value.Name, Margin = new Thickness(2) },
+                    Child = new TextBlock 
+                    { 
+                        Text = item.Value.Name, 
+                        Margin = new Thickness(2),
+                        Foreground = Brushes.White,
+                    },
                     Height = heightItem,
                 });
                 var bd = new Border
