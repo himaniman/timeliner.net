@@ -8,25 +8,14 @@
         mc:Ignorable="d"
         Title="Example" Height="250" Width="600">
     <DockPanel>
-        <TextBlock DockPanel.Dock="Bottom" Foreground="White" Text="asd"/>
-        <Button DockPanel.Dock="Bottom" Content="another element"/>
-        <ListView DockPanel.Dock="Bottom">
-            <ListView.View>
-                <GridView>
-                    <GridView.Columns>
-                        <GridViewColumn Header="another element" Width="200"/>
-                    </GridView.Columns>
-                </GridView>
-            </ListView.View>
-            <ListViewItem Content="another element"/>
-        </ListView>
-        <tl:Timeliner DockPanel.Dock="Top" Items="{Binding Items, Mode=OneWay}" FontSize="16" Margin="4">
+        <tl:Timeliner Items="{Binding Items, Mode=OneWay}" FontSize="16" Margin="4">
             <tl:Timeliner.DataTemplatePopup>
                 <DataTemplate>
                     <StackPanel>
                         <TextBlock Text="{Binding Name}"/>
                         <TextBlock Text="{Binding CustomObject.CustomString}" TextWrapping="Wrap"/>
                         <TextBlock Text="{Binding Begin, StringFormat={}{0:dd.MM.yyyy HH:mm}}"/>
+                        <!--<Button Content="test inside active element"/>-->
                     </StackPanel>
                 </DataTemplate>
             </tl:Timeliner.DataTemplatePopup>
