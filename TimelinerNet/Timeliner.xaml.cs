@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,6 +31,7 @@ namespace TimelinerNet
         private DateTime initCaptureLeftEdge;
         private DateTime initCaptureRightEdge;
         private TimeSpan initCaptureScalePx;
+        private CultureInfo cultureInfo = CultureInfo.GetCultureInfo("en-EN");
 
         public bool IsOnManipulate { get; set; }
         public bool? TestTEst { get; set; }
@@ -411,7 +413,7 @@ namespace TimelinerNet
                             var height = heightItem - 4;
                             var ln = new Path
                             {
-                                Data = Geometry.Parse($"M 0 {height} L3 {height - 3} L6 {height} L3 {height - 3} L3 3 L6 0 L3 3 L0 0 L3 3 L3 {height - 3} Z"),
+                                Data = Geometry.Parse(string.Format(cultureInfo, "M 0 {0} L3 {1} L6 {0} L3 {1} L3 3 L6 0 L3 3 L0 0 L3 3 L3 {1} Z", height, height - 3)),
                                 Width = 6,
                                 Height = height,
                                 Stroke = job.Value.Color.Clone(),

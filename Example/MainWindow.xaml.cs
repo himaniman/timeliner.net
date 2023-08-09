@@ -24,11 +24,6 @@ namespace Example
         public Dictionary<Guid, TimelinerNet.TimelinerItem> Items { get; private set; } = new Dictionary<Guid, TimelinerNet.TimelinerItem>();
         public MainWindow()
         {
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-EN");
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-EN");
-            FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement), new FrameworkPropertyMetadata(
-                        XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
-
             var now = new DateTime(2023, 08, 20, 23, 50, 00);
             Items.Add(Guid.NewGuid(), new TimelinerNet.TimelinerItem()
             {
