@@ -254,6 +254,25 @@ namespace TimelinerNet
                 });
                 currentMajor += majorSpan;
             }
+            var nowOffset = (Now - LeftEdge).ToPixcel(span, xSize);
+            grid_Timeline.Children.Add(new Line
+            {
+                X1 = nowOffset,
+                X2 = nowOffset,
+                Y1 = 0,
+                Y2 = grid_Timeline.ActualHeight,
+                Stroke = Brushes.Red,
+                StrokeThickness = 1,
+            });
+            grid_MainGrid.Children.Add(new Line
+            {
+                X1 = nowOffset,
+                X2 = nowOffset,
+                Y1 = 0,
+                Y2 = grid_MainGrid.ActualHeight,
+                Stroke = Brushes.Red,
+                StrokeThickness = 1,
+            });
             RedrawData();
         }
 
