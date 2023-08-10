@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -23,7 +24,8 @@ namespace TimelinerNet
 {
     public partial class Timeliner : UserControl, INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
+
         private DateTime Now;
         private DateTime LeftEdge;
         private DateTime RightEdge;
@@ -33,24 +35,38 @@ namespace TimelinerNet
         private TimeSpan initCaptureScalePx;
         private CultureInfo cultureInfo = CultureInfo.GetCultureInfo("en-EN");
 
-        public bool IsOnManipulate { get; set; }
-        public bool? TestTEst { get; set; }
+        public bool IsOnManipulate { get; private set; }
 
-        public Dictionary<Guid, TimelinerItem> Items
+
+
+        public int Test
         {
-            get { return (Dictionary<Guid, TimelinerItem>)GetValue(ItemsProperty); }
+            get { return (int)GetValue(TestProperty); }
+            set { SetValue(TestProperty, value); }
+        }
+
+        public static readonly DependencyProperty TestProperty =
+            DependencyProperty.Register("Test", typeof(int), typeof(Timeliner), new PropertyMetadata(0, new PropertyChangedCallback(ItemsPropertyChangedCallback)));
+
+
+
+        public ICollection<TimelinerItem> Items
+        {
+            get { return (ICollection<TimelinerItem>)GetValue(ItemsProperty); }
             set { SetValue(ItemsProperty, value); }
         }
 
         public static readonly DependencyProperty ItemsProperty =
-            DependencyProperty.Register("Items", typeof(Dictionary<Guid, TimelinerItem>), typeof(Timeliner), new PropertyMetadata(null, new PropertyChangedCallback(ItemsPropertyChangedCallback)));
+            DependencyProperty.Register("Items", typeof(ICollection<TimelinerItem>), typeof(Timeliner), new PropertyMetadata(null, new PropertyChangedCallback(ItemsPropertyChangedCallback)));
 
         private static void ItemsPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (e.NewValue != null && e.NewValue is Dictionary<Guid, TimelinerItem>)
+            Debug.WriteLine("asdasaas");
+            if (e.NewValue != null && e.NewValue is ICollection<TimelinerItem>)
             {
-
-                //BreadcrumbPicker input = (BreadcrumbPicker)d;
+                Timeliner input = (Timeliner)d;
+                input.RedrawData();
+                
                 //input.ParseStringToPath();
                 //input.SetPathFromHardLink(e.NewValue as string);
                 //input.RedrawValue(AverOn: input.Averaging);
@@ -281,6 +297,7 @@ namespace TimelinerNet
             var xSize = grid_Timeline.ActualWidth;
             stackPanel_Threads.Children.Clear();
             stackPanel_MainData.Children.Clear();
+            if (Items == null || !(Items?.Count > 0)) return;
 
             var span = RightEdge - LeftEdge;
             
@@ -296,8 +313,8 @@ namespace TimelinerNet
 
             foreach (var item in Items)
             {
-                var isTextUp = (item.Value.Jobs?.Any(x => !string.IsNullOrEmpty(x.Value.TextUp)) ?? false);
-                var isTextDown = (item.Value.Jobs?.Any(x => !string.IsNullOrEmpty(x.Value.TextDown)) ?? false);
+                var isTextUp = (item.Jobs?.Any(x => !string.IsNullOrEmpty(x.TextUp)) ?? false);
+                var isTextDown = (item.Jobs?.Any(x => !string.IsNullOrEmpty(x.TextDown)) ?? false);
                 var heightItem = heightText + 4 + (isTextUp ? heightText + 2 : 0);
                 stackPanel_Threads.Children.Add(new Border
                 {
@@ -305,7 +322,7 @@ namespace TimelinerNet
                     BorderThickness = new Thickness(0, 0, 0, 1),
                     Child = new TextBlock 
                     { 
-                        Text = item.Value.Name, 
+                        Text = item.Name, 
                         Margin = new Thickness(2),
                         Foreground = Brushes.White,
                     },
@@ -319,14 +336,14 @@ namespace TimelinerNet
                     Height = heightItem,
                 };
                 double lastItemLeftEdge = double.NaN;
-                foreach (var job in item.Value.Jobs.OrderByDescending(x => x.Value.Begin))
+                foreach (var job in item.Jobs.OrderByDescending(x => x.Begin))
                 {
-                    if (job.Value.End > LeftEdge && job.Value.Begin < RightEdge)
+                    if (job.End > LeftEdge && job.Begin < RightEdge)
                     {
-                        double width = (job.Value.End - job.Value.Begin).ToPixcel(span, xSize);
+                        double width = (job.End - job.Begin).ToPixcel(span, xSize);
                         var gr = new Grid
                         {
-                            Margin = new Thickness((job.Value.Begin - LeftEdge).ToPixcel(span, xSize), 0, 0, 0),
+                            Margin = new Thickness((job.Begin - LeftEdge).ToPixcel(span, xSize), 0, 0, 0),
                             Background = Brushes.Transparent,
                             HorizontalAlignment = HorizontalAlignment.Left,
                         };
@@ -334,10 +351,10 @@ namespace TimelinerNet
                         {
                             //if ((s as Grid).Children[0] is Border)
                             //{
-                            //    ((s as Grid).Children[0] as Border).Background = job.Value.Color.Clone();
+                            //    ((s as Grid).Children[0] as Border).Background = job.Color.Clone();
                             //}
                             cc_info.ContentTemplate = DataTemplatePopup ?? (DataTemplate)this.Resources["defaultTemplate"];
-                            cc_info.Content = job.Value;
+                            cc_info.Content = job;
                             popup_info.IsOpen = true;
                             Mouse.Capture(this);
                             e.Handled = true;
@@ -347,10 +364,10 @@ namespace TimelinerNet
                         {
                             var br = new Border
                             {
-                                Width = (job.Value.End - job.Value.Begin).ToPixcel(span, xSize),
+                                Width = (job.End - job.Begin).ToPixcel(span, xSize),
                                 Margin = new Thickness(0, isTextUp ? heightText : 0, 0, isTextDown ? heightText : 0),
                                 CornerRadius = new CornerRadius(4),
-                                Background = !job.Value.IsStripedColor ? job.Value.Color.Clone() 
+                                Background = !job.IsStripedColor ? job.Color.Clone() 
                                     : new LinearGradientBrush
                                     {
                                         MappingMode = BrushMappingMode.Absolute,
@@ -361,12 +378,12 @@ namespace TimelinerNet
                                             new GradientStop
                                             {
                                                 Offset = 0,
-                                                Color = ((SolidColorBrush)job.Value.Color).Color
+                                                Color = ((SolidColorBrush)job.Color).Color
                                             },
                                             new GradientStop
                                             {
                                                 Offset = 0.5,
-                                                Color = ((SolidColorBrush)job.Value.Color).Color
+                                                Color = ((SolidColorBrush)job.Color).Color
                                             },
                                             new GradientStop
                                             {
@@ -386,27 +403,27 @@ namespace TimelinerNet
                                 VerticalAlignment = VerticalAlignment.Center,
                                 Child = new TextBlock
                                 {
-                                    Text = job.Value.Name,
+                                    Text = job.Name,
                                     Margin = new Thickness(1)
                                 }
                             };
-                            if (!string.IsNullOrEmpty(job.Value.TextUp))
+                            if (!string.IsNullOrEmpty(job.TextUp))
                             {
                                 test = new TextBlock
                                 {
                                     HorizontalAlignment = HorizontalAlignment.Center,
                                     VerticalAlignment = VerticalAlignment.Bottom,
-                                    Text = job.Value.TextUp,
+                                    Text = job.TextUp,
                                     FontSize = FontSize
                                 };
                                 test.Measure(new Size(100, 100));
-                                var oversize = (job.Value.Begin - LeftEdge).ToPixcel(span, xSize) + test.DesiredSize.Width + 8 > lastItemLeftEdge;
+                                var oversize = (job.Begin - LeftEdge).ToPixcel(span, xSize) + test.DesiredSize.Width + 8 > lastItemLeftEdge;
                                 
                                 if (!oversize)
                                 {
                                     var textUp = new TextBlock
                                     {
-                                        Text = job.Value.TextUp,
+                                        Text = job.TextUp,
                                         Margin = new Thickness(0, 0, 0, heightText + (isTextDown ? heightText : 0))
                                     };
                                     gr.Children.Add(textUp);
@@ -424,7 +441,7 @@ namespace TimelinerNet
                                 //br.Width = br.Margin.Left - br.Width;
                                 (br.Child as TextBlock).Text = (br.Child as TextBlock).Text + "->";
                             }
-                            lastItemLeftEdge = (job.Value.Begin - LeftEdge).ToPixcel(span, xSize);
+                            lastItemLeftEdge = (job.Begin - LeftEdge).ToPixcel(span, xSize);
                             gr.Children.Add(br);
                         }
                         else
@@ -435,7 +452,7 @@ namespace TimelinerNet
                                 Data = Geometry.Parse(string.Format(cultureInfo, "M 0 {0} L3 {1} L6 {0} L3 {1} L3 3 L6 0 L3 3 L0 0 L3 3 L3 {1} Z", height, height - 3)),
                                 Width = 6,
                                 Height = height,
-                                Stroke = job.Value.Color.Clone(),
+                                Stroke = job.Color.Clone(),
                                 StrokeThickness = 2,
                                 HorizontalAlignment = HorizontalAlignment.Left,
                                 VerticalAlignment = VerticalAlignment.Center,
@@ -446,22 +463,22 @@ namespace TimelinerNet
                             {
                                 HorizontalAlignment = HorizontalAlignment.Center,
                                 VerticalAlignment = VerticalAlignment.Bottom,
-                                Text = job.Value.Name,
+                                Text = job.Name,
                                 FontSize = FontSize
                             };
                             test.Measure(new Size(100, 100));
 
-                            var oversize = (job.Value.Begin - LeftEdge).ToPixcel(span, xSize) + test.DesiredSize.Width + 8 > lastItemLeftEdge;
+                            var oversize = (job.Begin - LeftEdge).ToPixcel(span, xSize) + test.DesiredSize.Width + 8 > lastItemLeftEdge;
                             if (!oversize)
                             {
                                 var tx = new TextBlock
                                 {
-                                    Text = job.Value.Name,
+                                    Text = job.Name,
                                     Margin = new Thickness(6, isTextUp ? heightText : 0, 0, isTextDown ? heightText : 0)
                                 };
                                 gr.Children.Add(tx);
                             }
-                            lastItemLeftEdge = (job.Value.Begin - LeftEdge).ToPixcel(span, xSize);
+                            lastItemLeftEdge = (job.Begin - LeftEdge).ToPixcel(span, xSize);
                         }
                     (bd.Child as Grid).Children.Add(gr);
                     }

@@ -8,7 +8,8 @@
         mc:Ignorable="d"
         Title="Example" Height="250" Width="600">
     <DockPanel>
-        <tl:Timeliner Items="{Binding Items, Mode=OneWay}" FontSize="16" Margin="4">
+        <TextBlock Text="{Binding Test}"/>
+        <tl:Timeliner Items="{Binding Items}" Test="{Binding Test}" FontSize="16" Margin="4">
             <tl:Timeliner.DataTemplatePopup>
                 <DataTemplate>
                     <StackPanel>

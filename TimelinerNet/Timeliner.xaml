@@ -33,8 +33,17 @@
                 <StackPanel x:Name="stackPanel_Threads"/>
             </ScrollViewer>
         </Border>
-        <Border Grid.Column="1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" 
-                    BorderBrush="Black" BorderThickness="0">
+        <Border Grid.Column="1" BorderBrush="Black" BorderThickness="0">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:Timeliner}}, Path=IsOnManipulate, Mode=OneWay}" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
             <Grid x:Name="grid_Timeline" Background="#00000000" ClipToBounds="True" 
                   PreviewMouseDown="previewMouseDown" PreviewMouseUp="previewMouseUp" 
                   PreviewMouseMove="previewMouseMove" PreviewMouseWheel="previewMouseWheel"/>
