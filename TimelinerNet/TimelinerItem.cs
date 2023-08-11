@@ -6,15 +6,12 @@ using System.ComponentModel;
 
 namespace TimelinerNet
 {
-    public class TimelinerItem : INotifyPropertyChanged//, INotifyCollectionChanged
+    public class TimelinerItem
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-        //public event NotifyCollectionChangedEventHandler? CollectionChanged;
-
         public string Name { get; set; }
         public string Description { get; set; }
         public System.Windows.Controls.Viewbox Icon { get; set; }
         public bool IsEnabled { get; set; }
-        public ICollection<TimelinerJob> Jobs { get; set; }
+        public List<TimelinerJob> Jobs { get; set; } = new();
     }
 }

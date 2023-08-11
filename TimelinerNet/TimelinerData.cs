@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace TimelinerNet
 {
-    public class TimelinerData : INotifyPropertyChanged
+    public class TimelinerData
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-        public IEnumerable<TimelinerItem> Items { get; set; }
+        public bool IsNeedSidePanel => Items?.Count() > 0 && Items.Any(x => !string.IsNullOrEmpty(x.Name));
+        public List<TimelinerItem> Items { get; set; } = new();
     }
 }

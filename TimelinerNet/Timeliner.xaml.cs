@@ -27,7 +27,6 @@ namespace TimelinerNet
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private DateTime Now;
         private DateTime LeftEdge;
         private DateTime RightEdge;
         private Point initMousePoint;
@@ -35,67 +34,37 @@ namespace TimelinerNet
         private DateTime initCaptureRightEdge;
         private TimeSpan initCaptureScalePx;
         private CultureInfo cultureInfo = CultureInfo.GetCultureInfo("en-EN");
-
         public bool IsOnManipulate { get; private set; }
 
-
-
-        public int Test
+        public TimelinerData Data
         {
-            get { return (int)GetValue(TestProperty); }
-            set { SetValue(TestProperty, value); }
+            get { return (TimelinerData)GetValue(DataProperty); }
+            set { SetValue(DataProperty, value); }
         }
 
-        public static readonly DependencyProperty TestProperty =
-            DependencyProperty.Register("Test", typeof(int), typeof(Timeliner), new PropertyMetadata(0, new PropertyChangedCallback(ItemsPropertyChangedCallback)));
+        public static readonly DependencyProperty DataProperty =
+            DependencyProperty.Register("Data", typeof(TimelinerData), typeof(Timeliner), new PropertyMetadata(null, new PropertyChangedCallback(DataPropertyChangedCallback)));
 
-
-
-        public ICollection<TimelinerItem> Items
+        public DateTime Now
         {
-            get { return (ICollection<TimelinerItem>)GetValue(ItemsProperty); }
-            set { SetValue(ItemsProperty, value); }
+            get { return (DateTime)GetValue(NowProperty); }
+            set { SetValue(NowProperty, value); }
         }
 
-        public static readonly DependencyProperty ItemsProperty =
-            DependencyProperty.Register("Items", typeof(ICollection<TimelinerItem>), typeof(Timeliner), new PropertyMetadata(null, new PropertyChangedCallback(ItemsPropertyChangedCallback)));
+        public static readonly DependencyProperty NowProperty =
+            DependencyProperty.Register("Now", typeof(DateTime), typeof(Timeliner), new PropertyMetadata(DateTime.Now, new PropertyChangedCallback(DataPropertyChangedCallback)));
 
-        private static void ItemsPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void DataPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (e.NewValue != null && e.NewValue is ICollection<TimelinerItem> && d is Timeliner)
+            if (d is Timeliner)
             {
                 Timeliner input = (Timeliner)d;
-                var oldCollectionChanged = e.OldValue as INotifyCollectionChanged;
-                var newCollectionChanged = e.NewValue as INotifyCollectionChanged;
-
-                if (oldCollectionChanged != null)
+                input.RedrawGrid();
+                if (e.NewValue != null && e.NewValue is TimelinerData)
                 {
-                    oldCollectionChanged.CollectionChanged -= input.OnItemsCollectionChanged;
-                }
 
-                if (newCollectionChanged != null)
-                {
-                    newCollectionChanged.CollectionChanged += input.OnItemsCollectionChanged;
-
-                    // in addition to adding a CollectionChanged handler
-                    // any already existing collection elements should be processed here
                 }
-                input.RedrawData();
-                
-                //input.ParseStringToPath();
-                //input.SetPathFromHardLink(e.NewValue as string);
-                //input.RedrawValue(AverOn: input.Averaging);
             }
-        }
-
-        private void OnItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            Debug.WriteLine("canged");
-            Dispatcher.Invoke(() =>
-            {
-                RedrawData();
-            });
-            // handle collection changes here
         }
 
         public DataTemplate DataTemplatePopup
@@ -106,7 +75,6 @@ namespace TimelinerNet
 
         public static readonly DependencyProperty DataTemplatePopupProperty =
             DependencyProperty.Register("DataTemplatePopup", typeof(DataTemplate), typeof(Timeliner), new PropertyMetadata(null));
-
 
 
         public Timeliner()
@@ -206,6 +174,7 @@ namespace TimelinerNet
 
         public void RedrawGrid()
         {
+            if (grid_Timeline == null) return;
             var xSize = grid_Timeline.ActualWidth;
             grid_Timeline.Children.Clear();
             grid_MainGrid.Children.Clear();
@@ -317,10 +286,11 @@ namespace TimelinerNet
 
         public void RedrawData()
         {
+            if (grid_Timeline == null) return;
             var xSize = grid_Timeline.ActualWidth;
             stackPanel_Threads.Children.Clear();
             stackPanel_MainData.Children.Clear();
-            if (Items == null || !(Items?.Count() > 0)) return;
+            if (Data.Items == null || !(Data.Items?.Count() > 0)) return;
 
             var span = RightEdge - LeftEdge;
             
@@ -334,7 +304,7 @@ namespace TimelinerNet
             test.Measure(new Size(100, 100));
             double heightText = test.DesiredSize.Height;
 
-            foreach (var item in Items)
+            foreach (var item in Data.Items)
             {
                 var isTextUp = (item.Jobs?.Any(x => !string.IsNullOrEmpty(x.TextUp)) ?? false);
                 var isTextDown = (item.Jobs?.Any(x => !string.IsNullOrEmpty(x.TextDown)) ?? false);

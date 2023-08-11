@@ -27,22 +27,22 @@ namespace Example
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
-        public int Test { get; set; }
-        public ObservableCollection<TimelinerItem> Items { get; set; } = new();
+        public TimelinerData Data { get; set; } = new();
+        public DateTime Now { get; set; }
         public MainWindow()
         {
-            var now = new DateTime(2023, 08, 20, 23, 50, 00);
-            Items.Add(new TimelinerNet.TimelinerItem()
+            Now = new DateTime(2023, 08, 20, 23, 50, 00);
+            Data.Items.Add(new TimelinerNet.TimelinerItem()
             {
                 Name = "BUS 33-8479\nSEAT 40",
-                Jobs = new List<TimelinerNet.TimelinerJob>()
+                Jobs = new ()
                 {
                     new TimelinerNet.TimelinerJob()
                         {
                             Name = "P/U GUIDE EO 2484",
                             TextUp = "Transfer",
-                            Begin = now - TimeSpan.FromMinutes(30),
-                            End = now - TimeSpan.FromMinutes(15),
+                            Begin = Now - TimeSpan.FromMinutes(30),
+                            End = Now - TimeSpan.FromMinutes(15),
                             Color = Brushes.LightSalmon,
                             CustomObject = new { CustomString = "Driver: MR. U THAI\n30 km" }
                         },
@@ -51,8 +51,8 @@ namespace Example
                         {
                             Name = "TROPICAL PARADISE(JUNGLE KINGDOM) (PHUKET)",
                             TextUp = "Excursion",
-                            Begin = now - TimeSpan.FromMinutes(10),
-                            End = now + TimeSpan.FromMinutes(10),
+                            Begin = Now - TimeSpan.FromMinutes(10),
+                            End = Now + TimeSpan.FromMinutes(10),
                             Color = Brushes.LightPink,
                             CustomObject = new { CustomString = "Driver: MR. DHET\n120 km" }
                         },
@@ -61,8 +61,8 @@ namespace Example
                         {
                             Name = "ALL DAY CITY TOUR",
                             TextUp = "Tour",
-                            Begin = now + TimeSpan.FromMinutes(20),
-                            End = now + TimeSpan.FromMinutes(40),
+                            Begin = Now + TimeSpan.FromMinutes(20),
+                            End = Now + TimeSpan.FromMinutes(40),
                             Color = Brushes.LightGreen,
                             CustomObject = new { CustomString = "Driver: MR. U THAI\n20 km" }
                         },
@@ -71,46 +71,46 @@ namespace Example
                         {
                             Name = "M",
                             TextUp = "Maintance",
-                            Begin = now + TimeSpan.FromMinutes(70),
-                            End = now + TimeSpan.FromMinutes(100),
+                            Begin = Now + TimeSpan.FromMinutes(70),
+                            End = Now + TimeSpan.FromMinutes(100),
                             Color = Brushes.LightYellow,
                             CustomObject = new { CustomString = "---" }
                         },
                     
                 }
             });
-            Items.Add(new TimelinerNet.TimelinerItem()
+            Data.Items.Add(new TimelinerNet.TimelinerItem()
             {
                 Name = "Test item",
-                Jobs = new List<TimelinerNet.TimelinerJob>()
+                Jobs = new ()
                 {
                     new TimelinerNet.TimelinerJob()
                         {
                             Name = "JOB 1",
-                            Begin = now - TimeSpan.FromMinutes(60),
-                            End = now - TimeSpan.FromMinutes(50)
+                            Begin = Now - TimeSpan.FromMinutes(60),
+                            End = Now - TimeSpan.FromMinutes(50)
                         },
                     
                     new TimelinerNet.TimelinerJob()
                         {
                             Name = "Micro",
-                            Begin = now - TimeSpan.FromMinutes(48),
-                            End = now - TimeSpan.FromMinutes(47)
+                            Begin = Now - TimeSpan.FromMinutes(48),
+                            End = Now - TimeSpan.FromMinutes(47)
                         },
                     
                     new TimelinerNet.TimelinerJob()
                         {
                             Name = "Colored",
-                            Begin = now - TimeSpan.FromMinutes(40),
-                            End = now - TimeSpan.FromMinutes(30),
+                            Begin = Now - TimeSpan.FromMinutes(40),
+                            End = Now - TimeSpan.FromMinutes(30),
                             Color = Brushes.LightCoral,
                         },
                     
                     new TimelinerNet.TimelinerJob()
                         {
                             Name = "Striped",
-                            Begin = now - TimeSpan.FromMinutes(20),
-                            End = now - TimeSpan.FromMinutes(10),
+                            Begin = Now - TimeSpan.FromMinutes(20),
+                            End = Now - TimeSpan.FromMinutes(10),
                             IsStripedColor = true,
                             Color = Brushes.LightPink,
                         },
@@ -118,8 +118,8 @@ namespace Example
                     new TimelinerNet.TimelinerJob()
                         {
                             Name = "Popup info",
-                            Begin = now - TimeSpan.FromMinutes(9),
-                            End = now - TimeSpan.FromMinutes(0),
+                            Begin = Now - TimeSpan.FromMinutes(9),
+                            End = Now - TimeSpan.FromMinutes(0),
                             CustomObject = new { CustomString = "Additional info" }
                         },
                 }
@@ -133,33 +133,8 @@ namespace Example
                 while (true)
                 {
                     Thread.Sleep(1000);
-                    //Items.First().Name += "sa";
-                    //Items.First().Jobs.First().Begin += TimeSpan.FromMinutes(3);
-                    //Items.First().Jobs.First().End += TimeSpan.FromMinutes(3);
-                    //Items.First().Jobs.Add(new TimelinerJob
-                    //{
-                    //    Name = "ads",
-                    //    Begin = now - TimeSpan.FromMinutes(10),
-                    //    End = now
-                    //});
-                    Items.Add(new TimelinerItem
-                    {
-                        Name = "hello",
-                        Jobs = new List<TimelinerJob>()
-                        {
-                            new TimelinerJob
-                            {
-                                Name = "ads",
-                                Begin = now - TimeSpan.FromMinutes(10),
-                                End = now
-                            }
-                        }
-                    });
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Items)));
-                    //CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, nameof(Items)));
-                    //Items = new ObservableCollection<TimelinerItem>(Items);
-                    //Test++;
-                    //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Test)));
+                    Now += TimeSpan.FromMinutes(1);
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Now)));
                 }
             }).ContinueWith((t, o) => { }, TaskScheduler.FromCurrentSynchronizationContext());
         }
