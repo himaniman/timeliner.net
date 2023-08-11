@@ -27,8 +27,6 @@ namespace TimelinerNet
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private DateTime LeftEdge;
-        private DateTime RightEdge;
         private Point initMousePoint;
         private DateTime initCaptureLeftEdge;
         private DateTime initCaptureRightEdge;
@@ -87,7 +85,40 @@ namespace TimelinerNet
                 input.RedrawNowMarker();
             }
         }
-        
+
+
+
+        public DateTime LeftEdge
+        {
+            get { return (DateTime)GetValue(LeftEdgeProperty); }
+            set { SetValue(LeftEdgeProperty, value); }
+        }
+
+        public static readonly DependencyProperty LeftEdgeProperty =
+            DependencyProperty.Register("LeftEdge", typeof(DateTime), typeof(Timeliner), new PropertyMetadata(DateTime.Now - TimeSpan.FromMinutes(10), new PropertyChangedCallback(EdgePropertyChangedCallback)));
+
+        public DateTime RightEdge
+        {
+            get { return (DateTime)GetValue(RightEdgeProperty); }
+            set { SetValue(RightEdgeProperty, value); }
+        }
+
+        public static readonly DependencyProperty RightEdgeProperty =
+            DependencyProperty.Register("RightEdge", typeof(DateTime), typeof(Timeliner), new PropertyMetadata(DateTime.Now + TimeSpan.FromMinutes(10), new PropertyChangedCallback(EdgePropertyChangedCallback)));
+
+        private static void EdgePropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is Timeliner)
+            {
+                Timeliner input = (Timeliner)d;
+                if (e.NewValue != null && e.NewValue is DateTime)
+                {
+                    
+                }
+                input.RedrawGrid();
+            }
+        }
+
 
         public bool TrackNow
         {
@@ -111,9 +142,6 @@ namespace TimelinerNet
 
         public Timeliner()
         {
-            Now = new DateTime(2023, 08, 20, 23, 50, 00);
-            LeftEdge = Now - TimeSpan.FromMinutes(60);
-            RightEdge = Now + TimeSpan.FromMinutes(30);
             InitializeComponent();
         }
 

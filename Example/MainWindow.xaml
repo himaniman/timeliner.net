@@ -9,7 +9,8 @@
         Title="Example" Height="250" Width="600">
     <DockPanel>
         <TextBlock Text="{Binding Test}"/>
-        <tl:Timeliner Data="{Binding Data}" Now="{Binding Now}" TrackNow="True" FontSize="16" Margin="4">
+        <tl:Timeliner Data="{Binding Data}" Now="{Binding Now}" LeftEdge="{Binding LeftEdge}" RightEdge="{Binding RightEdge}"
+                      TrackNow="True" FontSize="16" Margin="4">
             <tl:Timeliner.DataTemplatePopup>
                 <DataTemplate>
                     <StackPanel>

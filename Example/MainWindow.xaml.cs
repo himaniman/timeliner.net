@@ -29,9 +29,13 @@ namespace Example
         public event PropertyChangedEventHandler? PropertyChanged;
         public TimelinerData Data { get; set; } = new();
         public DateTime Now { get; set; }
+        public DateTime LeftEdge { get; set; }
+        public DateTime RightEdge { get; set; }
         public MainWindow()
         {
             Now = new DateTime(2023, 08, 20, 23, 50, 00);
+            LeftEdge = Now - TimeSpan.FromMinutes(60);
+            RightEdge = Now + TimeSpan.FromMinutes(30);
             Data.Items.Add(new TimelinerNet.TimelinerItem()
             {
                 Name = "BUS 33-8479\nSEAT 40",
