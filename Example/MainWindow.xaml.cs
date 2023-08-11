@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
@@ -26,14 +28,14 @@ namespace Example
     {
         public event PropertyChangedEventHandler? PropertyChanged;
         public int Test { get; set; }
-        public List<TimelinerItem> Items { get; set; } = new();
+        public ObservableCollection<TimelinerItem> Items { get; set; } = new();
         public MainWindow()
         {
             var now = new DateTime(2023, 08, 20, 23, 50, 00);
             Items.Add(new TimelinerNet.TimelinerItem()
             {
                 Name = "BUS 33-8479\nSEAT 40",
-                Jobs = new ()
+                Jobs = new List<TimelinerNet.TimelinerJob>()
                 {
                     new TimelinerNet.TimelinerJob()
                         {
@@ -80,7 +82,7 @@ namespace Example
             Items.Add(new TimelinerNet.TimelinerItem()
             {
                 Name = "Test item",
-                Jobs = new()
+                Jobs = new List<TimelinerNet.TimelinerJob>()
                 {
                     new TimelinerNet.TimelinerJob()
                         {
@@ -131,9 +133,31 @@ namespace Example
                 while (true)
                 {
                     Thread.Sleep(1000);
-                    Items.First().Jobs.First().End += TimeSpan.FromMinutes(1);
+                    //Items.First().Name += "sa";
+                    //Items.First().Jobs.First().Begin += TimeSpan.FromMinutes(3);
+                    //Items.First().Jobs.First().End += TimeSpan.FromMinutes(3);
+                    //Items.First().Jobs.Add(new TimelinerJob
+                    //{
+                    //    Name = "ads",
+                    //    Begin = now - TimeSpan.FromMinutes(10),
+                    //    End = now
+                    //});
+                    Items.Add(new TimelinerItem
+                    {
+                        Name = "hello",
+                        Jobs = new List<TimelinerJob>()
+                        {
+                            new TimelinerJob
+                            {
+                                Name = "ads",
+                                Begin = now - TimeSpan.FromMinutes(10),
+                                End = now
+                            }
+                        }
+                    });
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Items)));
-                    //Items = new List<TimelinerItem>(Items);
+                    //CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, nameof(Items)));
+                    //Items = new ObservableCollection<TimelinerItem>(Items);
                     //Test++;
                     //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Test)));
                 }

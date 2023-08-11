@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -61,10 +62,24 @@ namespace TimelinerNet
 
         private static void ItemsPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            Debug.WriteLine("asdasaas");
-            if (e.NewValue != null && e.NewValue is ICollection<TimelinerItem>)
+            if (e.NewValue != null && e.NewValue is ICollection<TimelinerItem> && d is Timeliner)
             {
                 Timeliner input = (Timeliner)d;
+                var oldCollectionChanged = e.OldValue as INotifyCollectionChanged;
+                var newCollectionChanged = e.NewValue as INotifyCollectionChanged;
+
+                if (oldCollectionChanged != null)
+                {
+                    oldCollectionChanged.CollectionChanged -= input.OnItemsCollectionChanged;
+                }
+
+                if (newCollectionChanged != null)
+                {
+                    newCollectionChanged.CollectionChanged += input.OnItemsCollectionChanged;
+
+                    // in addition to adding a CollectionChanged handler
+                    // any already existing collection elements should be processed here
+                }
                 input.RedrawData();
                 
                 //input.ParseStringToPath();
@@ -73,7 +88,15 @@ namespace TimelinerNet
             }
         }
 
-
+        private void OnItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            Debug.WriteLine("canged");
+            Dispatcher.Invoke(() =>
+            {
+                RedrawData();
+            });
+            // handle collection changes here
+        }
 
         public DataTemplate DataTemplatePopup
         {
@@ -297,7 +320,7 @@ namespace TimelinerNet
             var xSize = grid_Timeline.ActualWidth;
             stackPanel_Threads.Children.Clear();
             stackPanel_MainData.Children.Clear();
-            if (Items == null || !(Items?.Count > 0)) return;
+            if (Items == null || !(Items?.Count() > 0)) return;
 
             var span = RightEdge - LeftEdge;
             
