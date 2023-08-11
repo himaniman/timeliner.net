@@ -14,7 +14,18 @@
     </UserControl.Resources>
     <Grid Height="{Binding Path=Height, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="180"/>
+            <ColumnDefinition>
+                <ColumnDefinition.Style>
+                    <Style TargetType="ColumnDefinition">
+                        <Setter Property="Width" Value="180"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:Timeliner}}, Path=IsNeedSidePanel, Mode=OneWay}" Value="false">
+                                <Setter Property="Width" Value="0"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ColumnDefinition.Style>
+            </ColumnDefinition>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -22,13 +33,13 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Border Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                    BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" BorderThickness="0,0,1,1">
+                BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" BorderThickness="0,0,1,1">
             <StackPanel>
                 <TextBlock Text="" Margin="2"/>
             </StackPanel>
         </Border>
         <Border Grid.Row="1" Background="{Binding Path=Background, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
-                    BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" BorderThickness="0,1,1,0">
+                BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" BorderThickness="0,1,1,0">
             <ScrollViewer VerticalScrollBarVisibility="Auto" FlowDirection="RightToLeft" ScrollChanged="ScrollViewer_ScrollChanged">
                 <StackPanel x:Name="stackPanel_Threads"/>
             </ScrollViewer>
