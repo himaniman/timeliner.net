@@ -135,24 +135,6 @@ namespace Example
                     Thread.Sleep(1000);
                     Now += TimeSpan.FromMinutes(1);
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Now)));
-
-                    Data = new();
-                    Data.Items.Add(new TimelinerNet.TimelinerItem()
-                    {
-                        Jobs = new()
-                        {
-                            new TimelinerNet.TimelinerJob()
-                                {
-                                    Name = "P/U GUIDE EO 2484",
-                                    TextUp = "Transfer",
-                                    Begin = Now - TimeSpan.FromMinutes(30),
-                                    End = Now - TimeSpan.FromMinutes(15),
-                                    Color = Brushes.LightSalmon,
-                                    CustomObject = new { CustomString = "Driver: MR. U THAI\n30 km" }
-                                },
-                        }
-                    });
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Data)));
                 }
             }).ContinueWith((t, o) => { }, TaskScheduler.FromCurrentSynchronizationContext());
         }

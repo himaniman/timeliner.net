@@ -33,6 +33,8 @@ namespace TimelinerNet
         private DateTime initCaptureLeftEdge;
         private DateTime initCaptureRightEdge;
         private TimeSpan initCaptureScalePx;
+        private Line NowMarker1;
+        private Line NowMarker2;
         private CultureInfo cultureInfo = CultureInfo.GetCultureInfo("en-EN");
         public bool IsOnManipulate { get; private set; }
         public bool IsNeedSidePanel => Data?.IsNeedSidePanel ?? true;
@@ -46,15 +48,6 @@ namespace TimelinerNet
         public static readonly DependencyProperty DataProperty =
             DependencyProperty.Register("Data", typeof(TimelinerData), typeof(Timeliner), new PropertyMetadata(null, new PropertyChangedCallback(DataPropertyChangedCallback)));
 
-        public DateTime Now
-        {
-            get { return (DateTime)GetValue(NowProperty); }
-            set { SetValue(NowProperty, value); }
-        }
-
-        public static readonly DependencyProperty NowProperty =
-            DependencyProperty.Register("Now", typeof(DateTime), typeof(Timeliner), new PropertyMetadata(DateTime.Now, new PropertyChangedCallback(DataPropertyChangedCallback)));
-
         private static void DataPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is Timeliner)
@@ -64,17 +57,37 @@ namespace TimelinerNet
                 {
                     input.PropertyChanged?.Invoke(input, new PropertyChangedEventArgs(nameof(IsNeedSidePanel)));
                 }
+                input.RedrawGrid();
+            }
+        }
+
+        public DateTime Now
+        {
+            get { return (DateTime)GetValue(NowProperty); }
+            set { SetValue(NowProperty, value); }
+        }
+
+        public static readonly DependencyProperty NowProperty =
+            DependencyProperty.Register("Now", typeof(DateTime), typeof(Timeliner), new PropertyMetadata(DateTime.Now, new PropertyChangedCallback(NowPropertyChangedCallback)));
+
+        private static void NowPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is Timeliner)
+            {
+                Timeliner input = (Timeliner)d;
                 if (e.NewValue != null && e.NewValue is DateTime)
                 {
                     if (input.TrackNow && e.OldValue != null && e.OldValue != default && e.NewValue != default)
                     {
                         input.LeftEdge += (DateTime)e.NewValue - (DateTime)e.OldValue;
                         input.RightEdge += (DateTime)e.NewValue - (DateTime)e.OldValue;
+                        input.RedrawGrid();
                     }
                 }
-                input.RedrawGrid();
+                input.RedrawNowMarker();
             }
         }
+        
 
         public bool TrackNow
         {

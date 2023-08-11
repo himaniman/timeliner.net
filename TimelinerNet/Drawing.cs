@@ -9,11 +9,56 @@ using System.Windows.Shapes;
 using System.Windows;
 using System.Windows.Input;
 using System.ComponentModel;
+using System.Windows.Documents;
 
 namespace TimelinerNet
 {
     public partial class Timeliner
     {
+        public void RedrawNowMarker()
+        {
+            if (grid_Timeline == null || grid_MainGrid == null) return;
+            var xSize = grid_Timeline.ActualWidth;
+            var span = RightEdge - LeftEdge;
+            var nowOffset = (Now - LeftEdge).ToPixcel(span, xSize);
+            if (grid_Timeline.Children.Contains(NowMarker1))
+            {
+                NowMarker1.X1 = nowOffset;
+                NowMarker1.X2 = nowOffset;
+            }
+            else
+            {
+                NowMarker1 = new Line
+                {
+                    X1 = nowOffset,
+                    X2 = nowOffset,
+                    Y1 = 0,
+                    Y2 = grid_Timeline.ActualHeight,
+                    Stroke = Brushes.Red,
+                    StrokeThickness = 1,
+                };
+                grid_Timeline.Children.Add(NowMarker1);
+            }
+            if (grid_MainGrid.Children.Contains(NowMarker2))
+            {
+                NowMarker2.X1 = nowOffset;
+                NowMarker2.X2 = nowOffset;
+            }
+            else
+            {
+                NowMarker2 = new Line
+                {
+                    X1 = nowOffset,
+                    X2 = nowOffset,
+                    Y1 = 0,
+                    Y2 = grid_MainGrid.ActualHeight,
+                    Stroke = Brushes.Red,
+                    StrokeThickness = 1,
+                };
+                grid_MainGrid.Children.Add(NowMarker2);
+            }
+        }
+
         public void RedrawGrid()
         {
             if (grid_Timeline == null) return;
@@ -104,25 +149,7 @@ namespace TimelinerNet
                 });
                 currentMajor += majorSpan;
             }
-            var nowOffset = (Now - LeftEdge).ToPixcel(span, xSize);
-            grid_Timeline.Children.Add(new Line
-            {
-                X1 = nowOffset,
-                X2 = nowOffset,
-                Y1 = 0,
-                Y2 = grid_Timeline.ActualHeight,
-                Stroke = Brushes.Red,
-                StrokeThickness = 1,
-            });
-            grid_MainGrid.Children.Add(new Line
-            {
-                X1 = nowOffset,
-                X2 = nowOffset,
-                Y1 = 0,
-                Y2 = grid_MainGrid.ActualHeight,
-                Stroke = Brushes.Red,
-                StrokeThickness = 1,
-            });
+            RedrawNowMarker();
             RedrawData();
         }
 
