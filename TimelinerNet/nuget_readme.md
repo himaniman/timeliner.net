@@ -1,14 +1,8 @@
-<div align="center">
-    <img src="Images/icon.ico" alt="Logo" width="80" height="80"/>
-</div>
-
 ## About Timeliner
 
 *Interactive control for visualizing the schedule*
 
 The GUI element is designed for WPF .NET applications. Allows the developer to show tasks grouped in a timeline. An element can include multiple Items within which multiple Jobs can be included. Jobs must not overlap. The control is under development.
-
-![Screenshot](Images/example.png)
 
 Some features:
 * Open source
