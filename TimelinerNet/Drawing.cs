@@ -129,7 +129,7 @@ namespace TimelinerNet
                     FontSize = FontSize
                 };
                 test.Measure(new Size(100, 100));
-                double widthTextMinor = test.DesiredSize.Width + 8;
+                double widthTextMinor = test.DesiredSize.Width + 10;
 
                 var currentMinor = currentMajor;
                 var minorSpan = minorMode.ModeToSpan(currentMinor);

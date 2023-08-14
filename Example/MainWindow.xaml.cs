@@ -36,45 +36,45 @@ namespace Example
             Now = new DateTime(2023, 08, 20, 23, 50, 00);
             LeftEdge = Now - TimeSpan.FromMinutes(60);
             RightEdge = Now + TimeSpan.FromMinutes(30);
-            Data.Items.Add(new TimelinerNet.TimelinerItem()
+            Data.Items.Add(new TimelinerItem()
             {
-                Name = "BUS 33-8479\nSEAT 40",
+                Name = "Item #1\nSecond string",
                 Jobs = new ()
                 {
-                    new TimelinerNet.TimelinerJob()
+                    new TimelinerJob()
                         {
-                            Name = "P/U GUIDE EO 2484",
-                            TextUp = "Transfer",
+                            Name = "Job 1",
+                            TextUp = "Text Up 1",
                             Begin = Now - TimeSpan.FromMinutes(30),
                             End = Now - TimeSpan.FromMinutes(15),
                             Color = Brushes.LightSalmon,
-                            CustomObject = new { CustomString = "Driver: MR. U THAI\n30 km" }
+                            CustomObject = new { CustomString = "Custom string info 1 row\nCustom string info 2 row" }
                         },
                     
-                    new TimelinerNet.TimelinerJob()
+                    new TimelinerJob()
                         {
-                            Name = "TROPICAL PARADISE(JUNGLE KINGDOM) (PHUKET)",
-                            TextUp = "Excursion",
+                            Name = "Job 2",
+                            TextUp = "Text Up 2",
                             Begin = Now - TimeSpan.FromMinutes(10),
                             End = Now + TimeSpan.FromMinutes(10),
                             Color = Brushes.LightPink,
-                            CustomObject = new { CustomString = "Driver: MR. DHET\n120 km" }
+                            CustomObject = new { CustomString = "Custom string info 1 row\nCustom string info 2 row" }
                         },
                     
-                    new TimelinerNet.TimelinerJob()
+                    new TimelinerJob()
                         {
-                            Name = "ALL DAY CITY TOUR",
-                            TextUp = "Tour",
+                            Name = "Job 3",
+                            TextUp = "Text Up 3",
                             Begin = Now + TimeSpan.FromMinutes(20),
                             End = Now + TimeSpan.FromMinutes(40),
                             Color = Brushes.LightGreen,
-                            CustomObject = new { CustomString = "Driver: MR. U THAI\n20 km" }
+                            CustomObject = new { CustomString = "Custom string info 1 row\nCustom string info 2 row" }
                         },
                     
-                    new TimelinerNet.TimelinerJob()
+                    new TimelinerJob()
                         {
-                            Name = "M",
-                            TextUp = "Maintance",
+                            Name = "Job 4",
+                            TextUp = "Text Up 4",
                             Begin = Now + TimeSpan.FromMinutes(70),
                             End = Now + TimeSpan.FromMinutes(100),
                             Color = Brushes.LightYellow,
@@ -83,26 +83,26 @@ namespace Example
                     
                 }
             });
-            Data.Items.Add(new TimelinerNet.TimelinerItem()
+            Data.Items.Add(new TimelinerItem()
             {
                 Name = "Test item",
                 Jobs = new ()
                 {
-                    new TimelinerNet.TimelinerJob()
+                    new TimelinerJob()
                         {
                             Name = "JOB 1",
                             Begin = Now - TimeSpan.FromMinutes(60),
                             End = Now - TimeSpan.FromMinutes(50)
                         },
                     
-                    new TimelinerNet.TimelinerJob()
+                    new TimelinerJob()
                         {
                             Name = "Micro",
                             Begin = Now - TimeSpan.FromMinutes(48),
                             End = Now - TimeSpan.FromMinutes(47)
                         },
                     
-                    new TimelinerNet.TimelinerJob()
+                    new TimelinerJob()
                         {
                             Name = "Colored",
                             Begin = Now - TimeSpan.FromMinutes(40),
@@ -110,7 +110,7 @@ namespace Example
                             Color = Brushes.LightCoral,
                         },
                     
-                    new TimelinerNet.TimelinerJob()
+                    new TimelinerJob()
                         {
                             Name = "Striped",
                             Begin = Now - TimeSpan.FromMinutes(20),
@@ -119,7 +119,7 @@ namespace Example
                             Color = Brushes.LightPink,
                         },
                     
-                    new TimelinerNet.TimelinerJob()
+                    new TimelinerJob()
                         {
                             Name = "Popup info",
                             Begin = Now - TimeSpan.FromMinutes(9),
@@ -130,17 +130,14 @@ namespace Example
             });
             DataContext = this;
             InitializeComponent();
+        }
 
-
-            Task.Run(() =>
-            {
-                while (true)
-                {
-                    Thread.Sleep(1000);
-                    Now += TimeSpan.FromMinutes(1);
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Now)));
-                }
-            }).ContinueWith((t, o) => { }, TaskScheduler.FromCurrentSynchronizationContext());
+        private void comboBox_FontSize_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            LeftEdge -= TimeSpan.FromSeconds(10);
+            RightEdge += TimeSpan.FromSeconds(10);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LeftEdge)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RightEdge)));
         }
     }
 }

@@ -4,13 +4,20 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:tl="clr-namespace:TimelinerNet;assembly=TimelinerNet"
+        xmlns:core="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:Example"
         mc:Ignorable="d"
         Title="Example" Height="250" Width="600">
     <DockPanel>
-        <TextBlock Text="{Binding Test}"/>
+        <ComboBox DockPanel.Dock="Top" x:Name="comboBox_FontSize" SelectedIndex="1" Margin="4" SelectionChanged="comboBox_FontSize_SelectionChanged">
+            <core:Double>12</core:Double>
+            <core:Double>14</core:Double>
+            <core:Double>16</core:Double>
+            <core:Double>20</core:Double>
+            <core:Double>26</core:Double>
+        </ComboBox>
         <tl:Timeliner Data="{Binding Data}" Now="{Binding Now}" LeftEdge="{Binding LeftEdge}" RightEdge="{Binding RightEdge}"
-                      TrackNow="True" FontSize="16" Margin="4">
+                      TrackNow="True" FontSize="{Binding ElementName=comboBox_FontSize, Path=SelectedItem}" Margin="4">
             <tl:Timeliner.DataTemplatePopup>
                 <DataTemplate>
                     <StackPanel>
