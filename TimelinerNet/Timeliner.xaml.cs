@@ -186,12 +186,13 @@ namespace TimelinerNet
 
         private void previewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed || Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+            if (e.LeftButton == MouseButtonState.Pressed)
             {
 
             }
             else
             {
+                var speed = Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl) ? 0.2 : 0.05;
                 var xSize = grid_Timeline.ActualWidth;
                 var posx = e.GetPosition(sender as IInputElement).X;
                 var weight = 0.5;
@@ -203,13 +204,13 @@ namespace TimelinerNet
                 var span = RightEdge - LeftEdge;
                 if (e.Delta < 0)
                 {
-                    LeftEdge -= span * 0.05 * weight;
-                    RightEdge += span * 0.05 * (1 - weight);
+                    LeftEdge -= span * speed * weight;
+                    RightEdge += span * speed * (1 - weight);
                 }
                 else
                 {
-                    LeftEdge += span * 0.05 * weight;
-                    RightEdge -= span * 0.05 * (1 - weight);
+                    LeftEdge += span * speed * weight;
+                    RightEdge -= span * speed * (1 - weight);
                 }
             }
             RedrawGrid();

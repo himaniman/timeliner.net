@@ -61,25 +61,36 @@ namespace TimelinerNet
 
         public void RedrawGrid()
         {
-            if (grid_Timeline == null) return;
+            if (grid_Timeline == null || !IsLoaded) return;
             var xSize = grid_Timeline.ActualWidth;
             grid_Timeline.Children.Clear();
             grid_MainGrid.Children.Clear();
 
+            TextBlock test = new TextBlock
+            {
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Text = "YYYY.MM.DD HH:MM:SS",
+                FontSize = FontSize
+            };
+            test.Measure(new Size(500, 100));
+            double widthTextMajor = test.DesiredSize.Width + 8;
+
             var span = RightEdge - LeftEdge;
-            var majorMode = span.NearSpanMode();
-            var minorMode = span.NearSpanMode() - 1;
-            //var timePerPixcel = span / xSize;
+
+            var majorModeWidthNormal = span.NearSpanMode().ModeToSpan(LeftEdge).ToPixcel(span, xSize);
+            var majorModeWidthLess = (span.NearSpanMode() - 1).ModeToSpan(LeftEdge).ToPixcel(span, xSize);
+
+            var majorMode = majorModeWidthLess >= widthTextMajor ? span.NearSpanMode() - 1 : majorModeWidthNormal >= widthTextMajor ? span.NearSpanMode() : span.NearSpanMode() + 1;
+            var minorMode = majorMode - 1;
 
             var leftEdgeMajor = LeftEdge.GetMajorLeftEdge(majorMode);
-            //var currentMajorTurn = 0;
             var currentMajor = leftEdgeMajor;
-
+            
             while (currentMajor <= RightEdge)
             {
                 var majorSpan = majorMode.ModeToSpan(currentMajor);
                 var majorWithPx = majorSpan.ToPixcel(span, xSize);
-                //currentMajor = leftEdgeMajor + major * currentMajorTurn;
                 var majorOffset = currentMajor - leftEdgeMajor - (LeftEdge - leftEdgeMajor);
                 var majorOffsetPx = majorOffset.ToPixcel(span, xSize);
 
@@ -109,13 +120,29 @@ namespace TimelinerNet
                     }
                 };
 
+                test = new TextBlock
+                {
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Bottom,
+                    Text = "77",
+                    FontSize = FontSize
+                };
+                test.Measure(new Size(100, 100));
+                double widthTextMinor = test.DesiredSize.Width + 8;
+
                 var currentMinor = currentMajor;
-                var minorSpan = minorMode.ModeToSpan(currentMinor) * 15;
+                var minorSpan = minorMode.ModeToSpan(currentMinor);
+                var minorWithPx = minorSpan.ToPixcel(span, xSize);
+                var reduceFactor = widthTextMinor / minorWithPx > 1 ? (Math.Round(widthTextMinor / minorWithPx / 2, MidpointRounding.AwayFromZero) * 2) : 1;
+                minorSpan *= reduceFactor;
                 while (currentMinor < currentMajor + majorSpan - minorSpan)
                 {
                     currentMinor += minorSpan;
-                    minorSpan = minorMode.ModeToSpan(currentMinor) * 15;
-                    var minorWithPx = minorSpan.ToPixcel(span, xSize);
+                    minorSpan = minorMode.ModeToSpan(currentMinor);
+                    minorWithPx = minorSpan.ToPixcel(span, xSize);
+                    reduceFactor = widthTextMinor / minorWithPx > 1 ? (Math.Round(widthTextMinor / minorWithPx / 2, MidpointRounding.AwayFromZero) * 2) : 1;
+                    minorSpan *= reduceFactor;
+                    minorWithPx *= reduceFactor;
                     var minorOffset = currentMinor - currentMajor;
                     var minorOffsetPx = minorOffset.ToPixcel(span, xSize);
                     ((border.Child as StackPanel).Children[1] as Grid).Children.Add(new TextBlock
@@ -124,7 +151,7 @@ namespace TimelinerNet
                         HorizontalAlignment = HorizontalAlignment.Left,
                         TextAlignment = TextAlignment.Center,
                         Width = minorWithPx,
-                        Margin = new Thickness(minorOffsetPx - minorWithPx / 2, 2, 2, 2)
+                        Margin = new Thickness(minorOffsetPx - minorWithPx / 2, 0, 2, 0)
                     });
                     grid_MainGrid.Children.Add(new Line
                     {

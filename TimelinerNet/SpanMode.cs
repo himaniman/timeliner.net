@@ -11,11 +11,11 @@ namespace TimelinerNet
         public static Mode NearSpanMode(this TimeSpan span)
         {
             if (span <= TimeSpan.FromSeconds(1)) return Mode.Seconds;
-            else if (span <= TimeSpan.FromSeconds(4)) return Mode.Seconds;
-            else if (span <= TimeSpan.FromMinutes(4)) return Mode.Minute;
-            else if (span <= TimeSpan.FromHours(4)) return Mode.Hour;
-            else if (span <= TimeSpan.FromDays(3)) return Mode.Day;
-            else if (span <= TimeSpan.FromDays(60)) return Mode.Month;
+            else if (span <= TimeSpan.FromSeconds(1)) return Mode.Seconds;
+            else if (span <= TimeSpan.FromMinutes(1)) return Mode.Minute;
+            else if (span <= TimeSpan.FromHours(1)) return Mode.Hour;
+            else if (span <= TimeSpan.FromDays(1)) return Mode.Day;
+            else if (span <= TimeSpan.FromDays(30)) return Mode.Month;
             else return Mode.Year;
         }
         public static TimeSpan ModeToSpan(this Mode mode, DateTime when)
@@ -64,9 +64,9 @@ namespace TimelinerNet
             switch (mode)
             {
                 case Mode.Seconds:
-                    return dt.ToString("HH:mm:ss");
+                    return dt.ToString("MM.dd HH:mm:ss");
                 case Mode.Minute:
-                    return dt.ToString("MM.dd HH:mm");
+                    return dt.ToString("MM.dd HH:mm:00");
                 case Mode.Hour:
                     return dt.ToString("yyyy.MM.dd HH:00");
                 case Mode.Day:
