@@ -98,7 +98,6 @@ namespace TimelinerNet
                 {
                     Width = majorWithPx,
                     Margin = new Thickness(majorOffsetPx, 0, 0, 0),
-                    //Background = new SolidColorBrush(Color.FromArgb(0xFF, 0xAC, 0xAC, 0xAC)),
                     BorderBrush = SystemColors.ActiveBorderBrush,
                     BorderThickness = new Thickness(1, 0, 1, 0),
                     HorizontalAlignment = HorizontalAlignment.Left,
@@ -109,8 +108,10 @@ namespace TimelinerNet
                             new TextBlock
                             {
                                 Text = currentMajor.ToFullString(majorMode),
-                                HorizontalAlignment = majorOffsetPx < 0 ? HorizontalAlignment.Right : majorOffsetPx + majorWithPx > xSize ? HorizontalAlignment.Left : HorizontalAlignment.Center,
-                                Margin = new Thickness(2)
+                                HorizontalAlignment = (majorOffsetPx < 0 && !(majorOffsetPx + majorWithPx > xSize)) 
+                                    ? HorizontalAlignment.Right : (majorOffsetPx + majorWithPx > xSize && !(majorOffsetPx < 0)) 
+                                    ? HorizontalAlignment.Left : HorizontalAlignment.Center,
+                                Margin = new Thickness(majorOffsetPx < 0 && majorOffsetPx + majorWithPx > xSize ? (LeftEdge - currentMajor).ToPixcel(span, xSize) : 2, 2, majorOffsetPx < 0 && majorOffsetPx + majorWithPx > xSize ? (currentMajor + majorSpan - RightEdge).ToPixcel(span, xSize) : 2, 2)
                             },
                             new Grid
                             {
@@ -238,10 +239,6 @@ namespace TimelinerNet
                         };
                         gr.PreviewMouseDown += (s, e) =>
                         {
-                            //if ((s as Grid).Children[0] is Border)
-                            //{
-                            //    ((s as Grid).Children[0] as Border).Background = job.Color.Clone();
-                            //}
                             cc_info.ContentTemplate = DataTemplatePopup ?? (DataTemplate)this.Resources["defaultTemplate"];
                             cc_info.Content = job;
                             popup_info.IsOpen = true;
