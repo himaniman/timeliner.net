@@ -16,6 +16,7 @@
             <core:Double>20</core:Double>
             <core:Double>26</core:Double>
         </ComboBox>
+        <tl:Timeliner DockPanel.Dock="Top" Margin="4"/>
         <tl:Timeliner Data="{Binding Data}" Now="{Binding Now}" LeftEdge="{Binding LeftEdge}" RightEdge="{Binding RightEdge}"
                       TrackNow="True" FontSize="{Binding ElementName=comboBox_FontSize, Path=SelectedItem}" Margin="4">
             <tl:Timeliner.DataTemplatePopup>

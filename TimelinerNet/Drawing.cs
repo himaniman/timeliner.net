@@ -187,7 +187,7 @@ namespace TimelinerNet
             var xSize = grid_Timeline.ActualWidth;
             stackPanel_Threads.Children.Clear();
             stackPanel_MainData.Children.Clear();
-            if (Data.Items == null || !(Data.Items?.Count() > 0)) return;
+            if (Data == null || Data.Items == null || !(Data.Items?.Count() > 0)) return;
 
             var span = RightEdge - LeftEdge;
 
