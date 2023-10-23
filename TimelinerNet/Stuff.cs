@@ -11,7 +11,7 @@ namespace TimelinerNet
 {
     public static class Stuff
     {
-        public static double ToPixcel(this TimeSpan time, TimeSpan spanDt, double spanPx) => time / spanDt * spanPx;
+        public static double ToPixcel(this TimeSpan time, TimeSpan spanDt, double spanPx) => time.Ticks / spanDt.Ticks * spanPx;
         public static T GetCopy<T>(this T element) where T : UIElement
         {
             using (var ms = new MemoryStream())

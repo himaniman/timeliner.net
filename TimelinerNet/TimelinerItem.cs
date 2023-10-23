@@ -12,6 +12,6 @@ namespace TimelinerNet
         public string Description { get; set; }
         public System.Windows.Controls.Viewbox Icon { get; set; }
         public bool IsEnabled { get; set; }
-        public List<TimelinerJob> Jobs { get; set; } = new();
+        public List<TimelinerJob> Jobs { get; set; } = new List<TimelinerJob>();
     }
 }

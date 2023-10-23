@@ -1,22 +1,25 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
+    <TargetFrameworks>net6.0-windows;net472;net48</TargetFrameworks>
     <UseWPF>true</UseWPF>
+    <Nullable>disable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>Timeliner</Title>
-    <Version>0.1.1</Version>
+    <Version>0.1.2</Version>
     <Authors>himaniman</Authors>
     <Description>Interactive control for visualizing the schedule</Description>
     <PackageProjectUrl>https://github.com/himaniman/timeliner.net</PackageProjectUrl>
     <PackageIcon>icon.png</PackageIcon>
-    <PackageReadmeFile>nuget_readme.md</PackageReadmeFile>
     <PackageTags>net;wpf;windows;timeline;timeslider;timescroll;datetime;schedule</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryUrl>https://github.com/himaniman/timeliner.net</RepositoryUrl>
     <PackageReleaseNotes>Fix null source crush</PackageReleaseNotes>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="nuget_readme.md" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Include="..\Images\icon.png">
