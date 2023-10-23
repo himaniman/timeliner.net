@@ -150,7 +150,7 @@ namespace TimelinerNet
                 initMousePoint = e.GetPosition(sender as IInputElement);
                 initCaptureLeftEdge = LeftEdge;
                 initCaptureRightEdge = RightEdge;
-                initCaptureScalePx = TimeSpan.FromTicks(Convert.ToInt64((RightEdge - LeftEdge).Ticks / grid_Timeline.ActualWidth));
+                initCaptureScalePx = TimeSpan.FromMilliseconds((RightEdge - LeftEdge).TotalMilliseconds / grid_Timeline.ActualWidth);
                 IsOnManipulate = true;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsOnManipulate)));
                 //e.Handled = true;
@@ -175,8 +175,8 @@ namespace TimelinerNet
             if (IsOnManipulate && e.LeftButton == MouseButtonState.Pressed && !popup_info.IsOpen)
             {
                 double deltapx = initMousePoint.X - e.GetPosition(sender as IInputElement).X;
-                LeftEdge = initCaptureLeftEdge + TimeSpan.FromTicks(Convert.ToInt64(deltapx * initCaptureScalePx.Ticks));
-                RightEdge = initCaptureRightEdge + TimeSpan.FromTicks(Convert.ToInt64(deltapx * initCaptureScalePx.Ticks));
+                LeftEdge = initCaptureLeftEdge + TimeSpan.FromMilliseconds(deltapx * initCaptureScalePx.TotalMilliseconds);
+                RightEdge = initCaptureRightEdge + TimeSpan.FromMilliseconds(deltapx * initCaptureScalePx.TotalMilliseconds);
                 RedrawGrid();
                 e.Handled = true;
             }
@@ -202,13 +202,13 @@ namespace TimelinerNet
                 var span = RightEdge - LeftEdge;
                 if (e.Delta < 0)
                 {
-                    LeftEdge -= TimeSpan.FromTicks(Convert.ToInt64(span.Ticks * speed * weight));
-                    RightEdge += TimeSpan.FromTicks(Convert.ToInt64(span.Ticks * speed * (1 - weight)));
+                    LeftEdge -= TimeSpan.FromMilliseconds(span.TotalMilliseconds * speed * weight);
+                    RightEdge += TimeSpan.FromMilliseconds(span.TotalMilliseconds * speed * (1 - weight));
                 }
                 else
                 {
-                    LeftEdge += TimeSpan.FromTicks(Convert.ToInt64(span.Ticks * speed * weight));
-                    RightEdge -= TimeSpan.FromTicks(Convert.ToInt64(span.Ticks * speed * (1 - weight)));
+                    LeftEdge += TimeSpan.FromMilliseconds(span.TotalMilliseconds * speed * weight);
+                    RightEdge -= TimeSpan.FromMilliseconds(span.TotalMilliseconds * speed * (1 - weight));
                 }
             }
             RedrawGrid();

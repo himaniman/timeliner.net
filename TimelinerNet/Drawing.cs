@@ -134,15 +134,15 @@ namespace TimelinerNet
                 var currentMinor = currentMajor;
                 var minorSpan = minorMode.ModeToSpan(currentMinor);
                 var minorWithPx = minorSpan.ToPixcel(span, xSize);
-                var reduceFactor = widthTextMinor / minorWithPx > 1 ? (Math.Round(widthTextMinor / minorWithPx / 2, MidpointRounding.AwayFromZero) * 2) : 1;
-                minorSpan = TimeSpan.FromTicks(Convert.ToInt64(minorSpan.Ticks * reduceFactor));
+                var reduceFactor = minorWithPx > 0 && widthTextMinor / minorWithPx > 1 ? (Math.Round(widthTextMinor / minorWithPx / 2, MidpointRounding.AwayFromZero) * 2) : 1;
+                minorSpan = TimeSpan.FromMilliseconds(minorSpan.TotalMilliseconds * reduceFactor);
                 while (currentMinor < currentMajor + majorSpan - minorSpan)
                 {
                     currentMinor += minorSpan;
                     minorSpan = minorMode.ModeToSpan(currentMinor);
                     minorWithPx = minorSpan.ToPixcel(span, xSize);
-                    reduceFactor = widthTextMinor / minorWithPx > 1 ? (Math.Round(widthTextMinor / minorWithPx / 2, MidpointRounding.AwayFromZero) * 2) : 1;
-                    minorSpan = TimeSpan.FromTicks(Convert.ToInt64(minorSpan.Ticks * reduceFactor));
+                    reduceFactor = minorWithPx > 0 && widthTextMinor / minorWithPx > 1 ? (Math.Round(widthTextMinor / minorWithPx / 2, MidpointRounding.AwayFromZero) * 2) : 1;
+                    minorSpan = TimeSpan.FromMilliseconds(minorSpan.TotalMilliseconds * reduceFactor);
                     minorWithPx *= reduceFactor;
                     var minorOffset = currentMinor - currentMajor;
                     var minorOffsetPx = minorOffset.ToPixcel(span, xSize);
