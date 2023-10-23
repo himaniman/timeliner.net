@@ -14,12 +14,9 @@
     <PackageTags>net;wpf;windows;timeline;timeslider;timescroll;datetime;schedule</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryUrl>https://github.com/himaniman/timeliner.net</RepositoryUrl>
-    <PackageReleaseNotes>Fix null source crush</PackageReleaseNotes>
+    <PackageReleaseNotes>Add more frameworks</PackageReleaseNotes>
+    <PackageReadmeFile>nuget_readme.md</PackageReadmeFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="nuget_readme.md" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Include="..\Images\icon.png">
@@ -33,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="nuget_readme.md">
+    <None Include="nuget_readme.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
