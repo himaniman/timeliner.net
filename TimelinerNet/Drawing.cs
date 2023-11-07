@@ -215,6 +215,9 @@ namespace TimelinerNet
                         Text = item.Name,
                         Margin = new Thickness(2),
                         Foreground = Brushes.White,
+                        HorizontalAlignment = HorizontalAlignment.Right,
+                        TextAlignment = TextAlignment.Right,
+                        //FlowDirection = FlowDirection.RightToLeft,
                     },
                     Height = heightItem,
                 });

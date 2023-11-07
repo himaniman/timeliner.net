@@ -40,7 +40,7 @@
         </Border>
         <Border Grid.Row="1" Background="{Binding Path=Background, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" 
                 BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" BorderThickness="0,1,1,0">
-            <ScrollViewer VerticalScrollBarVisibility="Auto" FlowDirection="RightToLeft" ScrollChanged="ScrollViewer_ScrollChanged">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" ScrollChanged="ScrollViewer_ScrollChanged">
                 <StackPanel x:Name="stackPanel_Threads" Margin="4,0"/>
             </ScrollViewer>
         </Border>

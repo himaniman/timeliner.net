@@ -38,7 +38,7 @@ namespace Example
             RightEdge = Now + TimeSpan.FromMinutes(30);
             Data.Items.Add(new TimelinerItem()
             {
-                Name = "Item #1\nSecond string",
+                Name = "Item #1\nSecond string and (fix dry)",
                 Jobs = new ()
                 {
                     new TimelinerJob()
