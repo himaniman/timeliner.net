@@ -6,7 +6,7 @@
     <Nullable>disable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>Timeliner</Title>
-    <Version>0.1.2</Version>
+    <Version>0.1.3</Version>
     <Authors>himaniman</Authors>
     <Description>Interactive control for visualizing the schedule</Description>
     <PackageProjectUrl>https://github.com/himaniman/timeliner.net</PackageProjectUrl>
@@ -14,7 +14,7 @@
     <PackageTags>net;wpf;windows;timeline;timeslider;timescroll;datetime;schedule</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryUrl>https://github.com/himaniman/timeliner.net</RepositoryUrl>
-    <PackageReleaseNotes>Add more frameworks</PackageReleaseNotes>
+    <PackageReleaseNotes>Fix width left panel</PackageReleaseNotes>
     <PackageReadmeFile>nuget_readme.md</PackageReadmeFile>
   </PropertyGroup>
 
