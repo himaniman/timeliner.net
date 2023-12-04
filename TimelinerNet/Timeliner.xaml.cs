@@ -34,7 +34,7 @@ namespace TimelinerNet
         private TimeSpan initCaptureScalePx;
         private Line NowMarker1;
         private Line NowMarker2;
-        private CultureInfo cultureInfo = CultureInfo.GetCultureInfo("en-EN");
+        private CultureInfo cultureInfo = CultureInfo.GetCultureInfo("en");
         public bool IsOnManipulate { get; private set; }
         public bool IsNeedSidePanel => Data?.IsNeedSidePanel ?? true;
 
