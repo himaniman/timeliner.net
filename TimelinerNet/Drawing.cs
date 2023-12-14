@@ -220,6 +220,7 @@ namespace TimelinerNet
                         //FlowDirection = FlowDirection.RightToLeft,
                     },
                     Height = heightItem,
+                    ToolTip = item.Description
                 });
                 var bd = new Border
                 {

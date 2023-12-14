@@ -39,6 +39,7 @@ namespace Example
             Data.Items.Add(new TimelinerItem()
             {
                 Name = "Item #1\nSecond string and (fix dry)",
+                Description = "Description tooltip\nHere",
                 Jobs = new ()
                 {
                     new TimelinerJob()
@@ -86,6 +87,7 @@ namespace Example
             Data.Items.Add(new TimelinerItem()
             {
                 Name = "Test item",
+                Description = "Description tooltip\nHere",
                 Jobs = new ()
                 {
                     new TimelinerJob()

@@ -6,7 +6,7 @@
     <Nullable>disable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>Timeliner</Title>
-    <Version>0.1.5</Version>
+    <Version>0.1.6</Version>
     <Authors>himaniman</Authors>
     <Description>Interactive control for visualizing the schedule</Description>
     <PackageProjectUrl>https://github.com/himaniman/timeliner.net</PackageProjectUrl>
@@ -14,7 +14,7 @@
     <PackageTags>net;wpf;windows;timeline;timeslider;timescroll;datetime;schedule</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryUrl>https://github.com/himaniman/timeliner.net</RepositoryUrl>
-    <PackageReleaseNotes>Fix culture crush in win7</PackageReleaseNotes>
+    <PackageReleaseNotes>Add description tooltip on threads</PackageReleaseNotes>
     <PackageReadmeFile>nuget_readme.md</PackageReadmeFile>
   </PropertyGroup>
 
